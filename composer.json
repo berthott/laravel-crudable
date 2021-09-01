@@ -1,0 +1,31 @@
+{
+  "name": "berthott/laravel-crudable",
+  "description": "Laravel Helper for CRUD Resources",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "Jan Bladt",
+          "email": "berthott@web.de"
+      }
+  ],
+  "minimum-stability": "dev",
+  "autoload" : {
+      "psr-4" : {
+          "berthott\\Crudable\\": "src"
+      }
+  },
+  "extra" : {
+      "laravel" : {
+          "providers" : [
+              "berthott\\Crudable\\CrudableServiceProvider"
+          ]
+      }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.0",
+    "phpunit/phpunit": "^9.5"
+  },
+  "require": {
+    "haydenpierce/class-finder": "dev-master"
+  }
+}
