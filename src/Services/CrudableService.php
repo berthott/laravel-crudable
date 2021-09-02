@@ -39,10 +39,13 @@ class CrudableService
    */
   private function initCrudableClasses(): void {
     $crudables = [];
-    foreach(ClassFinder::getClassesInNamespace(config('crudable.namespace')) as $class) {
-      foreach(class_uses($class) as $trait) {
-        if ($trait == 'berthott\Crudable\Models\Traits\Crudable') {
-          array_push($crudables, $class);
+    $namespaces = config('crudable.namespace');
+    foreach(is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
+      foreach(ClassFinder::getClassesInNamespace($namespace) as $class) {
+        foreach(class_uses($class) as $trait) {
+          if ($trait == 'berthott\Crudable\Models\Traits\Crudable') {
+            array_push($crudables, $class);
+          }
         }
       }
     }
@@ -55,8 +58,12 @@ class CrudableService
    * @return string
    */
   public function getTarget(): string {
-    return request()->segments() 
-      ? config('crudable.namespace').'\\'.Str::studly(Str::singular(request()->segment(count(explode('/', config('crudable.prefix'))) + 1)))
-      : '';
+    if (!request()->segments() || !$this->crudables) {
+      return '';
+    }
+    $model = Str::studly(Str::singular(request()->segment(count(explode('/', config('crudable.prefix'))) + 1)));
+    return $this->crudables->first(function($crudable) use ($model) {
+      return Str::contains($crudable, $model);
+    });
   }
 }

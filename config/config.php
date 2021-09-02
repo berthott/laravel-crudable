@@ -18,7 +18,7 @@ return [
     | Model Namespace Configuration
     |--------------------------------------------------------------------------
     |
-    | Defines the model namespace.
+    | Defines one or multiple model namespaces.
     |
     */
 
