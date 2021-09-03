@@ -28,10 +28,10 @@ class CrudController implements Targetable
   /**
    * Display the specified resource.
    *
-   * @param  int  $id
+   * @param  mixed  $id
    * @return Model
    */
-  public function show(int $id): Model
+  public function show($id): Model
   {
       return $this->target::findOrFail($id);
   }
@@ -50,10 +50,10 @@ class CrudController implements Targetable
   /**
    * Update the specified resource in storage.
    *
-   * @param  int $id
+   * @param  mixed $id
    * @return Model
    */
-  public function update(UpdateRequest $request, int $id): Model
+  public function update(UpdateRequest $request, $id): Model
   {
       $instance = $this->target::findOrFail($id);
       $instance->update($request->validated());
@@ -63,7 +63,7 @@ class CrudController implements Targetable
   /**
    * Remove the specified resource from storage.
    *
-   * @param  int $id
+   * @param  mixed $id
    * @return Response
    */
   public function destroy($id)
