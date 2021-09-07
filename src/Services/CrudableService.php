@@ -2,9 +2,9 @@
 
 namespace berthott\Crudable\Services;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use HaydenPierce\ClassFinder\ClassFinder;
-use \Illuminate\Support\Str;
 
 class CrudableService
 {
@@ -42,7 +42,7 @@ class CrudableService
     $namespaces = config('crudable.namespace');
     foreach(is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
       foreach(ClassFinder::getClassesInNamespace($namespace) as $class) {
-        foreach(class_uses($class) as $trait) {
+        foreach(class_uses_recursive($class) as $trait) {
           if ($trait == 'berthott\Crudable\Models\Traits\Crudable') {
             array_push($crudables, $class);
           }
