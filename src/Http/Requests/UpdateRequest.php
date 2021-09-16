@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest implements Targetable
  */
   public function rules()
   {
-    return array_merge(array_fill_keys($this->getInstance()->getFillable(), ''), $this->target::rules($this->getPrimaryId()));
+    return array_merge(array_fill_keys($this->getInstance()->getFillable(), 'nullable'), $this->target::rules($this->getPrimaryId()));
   }
 
   /**

@@ -14,6 +14,11 @@
           "berthott\\Crudable\\": "src"
       }
   },
+  "autoload-dev": {
+      "psr-4": {
+          "berthott\\Crudable\\Tests\\": "tests"
+      }
+  },
   "extra" : {
       "laravel" : {
           "providers" : [
