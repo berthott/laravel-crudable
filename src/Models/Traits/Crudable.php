@@ -2,14 +2,10 @@
 
 namespace berthott\Crudable\Models\Traits;
 
-
-trait Crudable {
-  
-    /**
-     * @param  mixed  $id
-     * @return array
-     */
-    public static function rules($id): array {
-      return [];
+trait Crudable
+{
+    public static function rules(/* mixed $id */): array
+    {
+        return [];
     }
 }

@@ -8,16 +8,11 @@ trait Targetable
 {
     /**
      * The target model.
-     * @var string
      */
-    private $target;
+    private string $target;
 
-    /**
-     * @param string $target
-     *
-     * @return void
-     */
-    public function initTarget(): void {
+    public function initTarget(): void
+    {
         $this->target = Crudable::getTarget();
     }
 }

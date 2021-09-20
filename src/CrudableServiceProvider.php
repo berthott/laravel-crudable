@@ -15,10 +15,8 @@ class CrudableServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         // bind singleton
         $this->app->singleton('Crudable', function () {
@@ -39,12 +37,9 @@ class CrudableServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-
         // publish config
         $this->publishes([
             __DIR__.'/../config/config.php' => config_path('crudable.php'),
@@ -52,17 +47,17 @@ class CrudableServiceProvider extends ServiceProvider
 
         // add routes
         Route::group($this->routeConfiguration(), function () {
-            foreach(Crudable::getCrudableClasses() as $crudable) {
+            foreach (Crudable::getCrudableClasses() as $crudable) {
                 Route::apiResource($crudable::newModelInstance()->getTable(), CrudController::class);
             }
         });
     }
-    
-    protected function routeConfiguration()
+
+    protected function routeConfiguration(): array
     {
         return [
             'middleware' => config('crudable.middleware'),
-            'prefix' => config('crudable.prefix')
+            'prefix' => config('crudable.prefix'),
         ];
     }
 }

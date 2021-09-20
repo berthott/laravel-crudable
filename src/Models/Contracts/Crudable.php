@@ -4,9 +4,5 @@ namespace berthott\Crudable\Models\Contracts;
 
 interface Crudable
 {
-    /**
-     * @param  mixed  $id
-     * @return array
-     */
-    public static function rules($id): array;
+    public static function rules(mixed $id): array;
 }
