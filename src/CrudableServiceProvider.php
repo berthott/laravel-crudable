@@ -7,6 +7,7 @@ use berthott\Crudable\Facades\Crudable;
 use berthott\Crudable\Http\Controllers\CrudController;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Services\CrudableService;
+use berthott\Crudable\Services\CrudRelationsService;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -18,9 +19,12 @@ class CrudableServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // bind singleton
+        // bind singletons
         $this->app->singleton('Crudable', function () {
             return new CrudableService();
+        });
+        $this->app->singleton('CrudRelations', function () {
+            return new CrudRelationsService();
         });
 
         // bind exception singleton

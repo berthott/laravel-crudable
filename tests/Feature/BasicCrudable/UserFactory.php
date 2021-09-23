@@ -1,6 +1,6 @@
 <?php
 
-namespace berthott\Crudable\Tests;
+namespace berthott\Crudable\Tests\Feature\BasicCrudable;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

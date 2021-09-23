@@ -1,7 +1,6 @@
 <?php
 
-namespace berthott\Crudable\Tests;
-
+namespace berthott\Crudable\Tests\Feature\BasicCrudable;
 
 use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +24,8 @@ class User extends Model
      * @param  mixed  $id
      * @return array
      */
-    public static function rules($id): array {
+    public static function rules($id): array
+    {
         return [
             'firstname' => 'required',
         ];

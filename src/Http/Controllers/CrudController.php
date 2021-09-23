@@ -2,6 +2,7 @@
 
 namespace berthott\Crudable\Http\Controllers;
 
+use berthott\Crudable\Facades\CrudRelations;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\Response;
 
 class CrudController implements Targetable
 {
@@ -40,7 +40,8 @@ class CrudController implements Targetable
      */
     public function store(UpdateRequest $request): Model
     {
-        return $this->target::create($request->validated());
+        $validated = $request->validated();
+        return CrudRelations::attach($this->target::create($validated), $validated);
     }
 
     /**
@@ -49,9 +50,9 @@ class CrudController implements Targetable
     public function update(UpdateRequest $request, mixed $id): Model
     {
         $instance = $this->target::findOrFail($id);
-        $instance->update($request->validated());
-
-        return $instance;
+        $validated = $request->validated();
+        $instance->update($validated);
+        return CrudRelations::attach($instance, $validated);
     }
 
     /**
