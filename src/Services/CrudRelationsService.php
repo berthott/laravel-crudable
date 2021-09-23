@@ -12,7 +12,7 @@ class CrudRelationsService
      */
     public function attach(Model $model, array $data): Model
     {
-        foreach ($this->getPossibleRelations($model, ['HasMany', 'BelongsToMany', 'MorphToMany']) as $relation) {
+        foreach ($this->getPossibleRelations($model, $model->attachables()) as $relation) {
             if (array_key_exists($relation->name, $data)) {
                 $relation->invoke($model)->detach();
                 $relation->invoke($model)->attach($data[$relation->name]);
@@ -23,19 +23,15 @@ class CrudRelationsService
     }
 
     /**
-     * Reflect the given model and search for relations based on the return type.
-     * Works only if return type is defined!
+     * Reflect the given model and search for relations based on the relation name
      */
-    public function getPossibleRelations(Model $model, array $methods = null): array
+    public function getPossibleRelations(Model $model, array $methods): array
     {
         $reflector = new ReflectionClass($model);
         $relations = [];
         foreach ($reflector->getMethods() as $reflectionMethod) {
-            $returnType = $reflectionMethod->getReturnType();
-            if ($returnType) {
-                if (in_array(class_basename($returnType->getName()), $methods ?: ['HasOne', 'HasMany', 'BelongsTo', 'BelongsToMany', 'MorphToMany', 'MorphTo'])) {
-                    $relations[] = $reflectionMethod;
-                }
+            if (in_array($reflectionMethod->name, $methods)) {
+                $relations[] = $reflectionMethod;
             }
         }
         return $relations;
