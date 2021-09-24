@@ -4,10 +4,8 @@ namespace berthott\Crudable\Tests\Feature\AttachRelation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class NameFactory extends Factory
 {
-    protected $model = User::class;
-
     public function definition()
     {
         return [
