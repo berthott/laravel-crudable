@@ -13,7 +13,7 @@ trait Crudable
         return [];
     }
 
-    public static function rules(/* mixed $id */): array
+    public static function rules(mixed $id): array
     {
         return [];
     }

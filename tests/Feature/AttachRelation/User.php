@@ -38,16 +38,6 @@ class User extends Model implements ContractsCrudable
     }
 
     /**
-     * @param  mixed  $id
-     */
-    public static function rules($id): array
-    {
-        return [
-            'roles.*' => 'nullable',
-        ];
-    }
-
-    /**
      * The roles that belong to the user.
      */
     public function roles()

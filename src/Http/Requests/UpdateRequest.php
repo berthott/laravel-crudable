@@ -19,7 +19,22 @@ class UpdateRequest extends FormRequest implements Targetable
      */
     public function rules(): array
     {
-        return array_merge(array_fill_keys($this->getInstance()->getFillable(), 'nullable'), $this->target::rules($this->getPrimaryId()));
+        $rules = array_merge(
+            array_fill_keys($this->getInstance()->getFillable(), 'nullable'),  // default fillable rules
+            $this->buildAttachableRules(),  // default attachables rules
+            $this->target::rules($this->getPrimaryId()), // target rules
+        );
+        return $rules;
+    }
+
+    protected function buildAttachableRules(): array
+    {
+        $rules = [];
+        foreach ($this->target::attachables() as $attachable) {
+            $rules[$attachable.'.0'] = ($this->getPrimaryId() ? '' : 'required');
+            $rules[$attachable.'.*'] = 'nullable|integer|exists:'.$attachable.',id';
+        }
+        return $rules;
     }
 
     protected function getInstance(): Model
