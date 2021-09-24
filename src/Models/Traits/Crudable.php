@@ -5,6 +5,15 @@ namespace berthott\Crudable\Models\Traits;
 trait Crudable
 {
     /**
+     * Returns an array of route options.
+     * See Route::apiResource documentation.
+     */
+    public static function routeOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * Returns an array of relations that should
      * be attached automatically.
      */

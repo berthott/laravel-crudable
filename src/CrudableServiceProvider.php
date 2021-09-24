@@ -52,7 +52,7 @@ class CrudableServiceProvider extends ServiceProvider
         // add routes
         Route::group($this->routeConfiguration(), function () {
             foreach (Crudable::getCrudableClasses() as $crudable) {
-                Route::apiResource($crudable::newModelInstance()->getTable(), CrudController::class);
+                Route::apiResource($crudable::newModelInstance()->getTable(), CrudController::class, $crudable::routeOptions());
             }
         });
     }
