@@ -5,10 +5,23 @@ namespace berthott\Crudable\Models\Traits;
 trait Crudable
 {
     /**
-     * Returns an array of foreign keys that should
+     * Returns an array of relations that should
      * be attached automatically.
      */
     public static function attachables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns an array of relations that should
+     * be attached or created automatically.
+     * 'relationMethod' => [
+     *      'class' => Relation::class,
+     *      'creationMethod' => Closure,
+     * ]
+     */
+    public static function creatables(): array
     {
         return [];
     }

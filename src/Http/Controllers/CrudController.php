@@ -60,6 +60,8 @@ class CrudController implements Targetable
      */
     public function destroy(mixed $id): int
     {
-        return $this->target::destroy($id);
+        $ret = $this->target::destroy($id);
+        CrudRelations::deleteUnrelatedCreatables($this->target);
+        return $ret;
     }
 }
