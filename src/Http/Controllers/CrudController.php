@@ -2,6 +2,7 @@
 
 namespace berthott\Crudable\Http\Controllers;
 
+use berthott\Crudable\Facades\CrudQuery;
 use berthott\Crudable\Facades\CrudRelations;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Crudable\Models\Contracts\Targetable;
@@ -24,7 +25,7 @@ class CrudController implements Targetable
      */
     public function index(): Collection
     {
-        return $this->target::all();
+        return CrudQuery::getQuery($this->target);
     }
 
     /**

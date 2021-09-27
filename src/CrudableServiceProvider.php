@@ -7,6 +7,7 @@ use berthott\Crudable\Facades\Crudable;
 use berthott\Crudable\Http\Controllers\CrudController;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Services\CrudableService;
+use berthott\Crudable\Services\CrudQueryService;
 use berthott\Crudable\Services\CrudRelationsService;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Route;
@@ -26,12 +27,16 @@ class CrudableServiceProvider extends ServiceProvider
         $this->app->singleton('CrudRelations', function () {
             return new CrudRelationsService();
         });
+        $this->app->singleton('CrudQuery', function () {
+            return new CrudQueryService();
+        });
 
         // bind exception singleton
         $this->app->singleton(ExceptionHandler::class, Handler::class);
 
         // add config
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'crudable');
+        $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
 
         // init targetables
         $this->app->afterResolving(Targetable::class, function (Targetable $targetable) {

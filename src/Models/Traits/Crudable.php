@@ -5,6 +5,16 @@ namespace berthott\Crudable\Models\Traits;
 trait Crudable
 {
     /**
+     * Returns an array of query builder options.
+     * See https://spatie.be/docs/laravel-query-builder/v3/introduction
+     * Options are: filter, sort, include, fields, append
+     */
+    public static function queryBuilderOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * Returns an array of route options.
      * See Route::apiResource documentation.
      */
