@@ -42,6 +42,7 @@ class CrudController implements Targetable
     public function store(UpdateRequest $request): Model
     {
         $validated = $request->validated();
+
         return CrudRelations::attach($this->target::create($validated), $validated);
     }
 
@@ -53,6 +54,7 @@ class CrudController implements Targetable
         $instance = $this->target::findOrFail($id);
         $validated = $request->validated();
         $instance->update($validated);
+
         return CrudRelations::attach($instance, $validated);
     }
 
@@ -63,6 +65,7 @@ class CrudController implements Targetable
     {
         $ret = $this->target::destroy($id);
         CrudRelations::deleteUnrelatedCreatables($this->target);
+
         return $ret;
     }
 }

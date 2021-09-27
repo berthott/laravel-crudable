@@ -8,16 +8,17 @@ use ReflectionClass;
 class CrudRelationsService
 {
     /**
-     * Attach an existing relation for the model
+     * Attach an existing relation for the model.
      */
     public function attach(Model $model, array $data): Model
     {
         $model = $this->attachExisting($model, $data);
+
         return $this->attachOrCreate($model, $data);
     }
 
     /**
-     * Attach an existing relation for the model
+     * Attach an existing relation for the model.
      */
     public function attachExisting(Model $model, array $data): Model
     {
@@ -28,11 +29,12 @@ class CrudRelationsService
                 $model->load($relation->name);
             }
         }
+
         return $model;
     }
 
     /**
-     * Attach or create the relations for the model
+     * Attach or create the relations for the model.
      */
     public function attachOrCreate(Model $model, array $data): Model
     {
@@ -41,9 +43,9 @@ class CrudRelationsService
             if (array_key_exists($relation->name, $data)) {
                 $relation->invoke($model)->detach();
                 $relationClass = $creatables[$relation->name]['class'];
-                $relationCreationMethod = $creatables[$relation->name]['creationMethod'];
+                $creationMethod = $creatables[$relation->name]['creationMethod'];
                 foreach ($data[$relation->name] as $dataEntry) {
-                    $relationInstance = $relationClass::firstOrCreate($relationCreationMethod($dataEntry));
+                    $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
                     $relation->invoke($model)->attach($relationInstance);
                 }
                 // delete unrelated
@@ -51,33 +53,35 @@ class CrudRelationsService
                 $model->load($relation->name);
             }
         }
+
         return $model;
     }
 
     /**
-     * Attach or create the relations for the model
+     * Attach or create the relations for the model.
      */
     public function deleteUnrelatedCreatables(string $class): void
     {
         $creatables = $class::creatables();
-        $instance = new $class;
+        $instance = new $class();
         foreach ($this->getPossibleRelations($class, array_keys($creatables)) as $relation) {
             $creatables[$relation->name]['class']::doesntHave($instance->getTable())->delete();
         }
     }
 
     /**
-     * Reflect the given model and search for relations based on the relation name
+     * Reflect the given model and search for relations based on the relation name.
      */
     public function getPossibleRelations(Model|string $model, array $methods): array
     {
         $reflector = new ReflectionClass($model);
         $relations = [];
         foreach ($reflector->getMethods() as $reflectionMethod) {
-            if (in_array($reflectionMethod->name, $methods)) {
+            if (in_array($reflectionMethod->name, $methods, true)) {
                 $relations[] = $reflectionMethod;
             }
         }
+
         return $relations;
     }
 }

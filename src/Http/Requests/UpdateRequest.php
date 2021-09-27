@@ -34,6 +34,7 @@ class UpdateRequest extends FormRequest implements Targetable
             $rules[$attachable] = 'array';
             $rules[$attachable.'.*'] = 'nullable|integer|exists:'.$attachable.',id';
         }
+
         return $rules;
     }
 
@@ -43,6 +44,7 @@ class UpdateRequest extends FormRequest implements Targetable
         foreach (array_keys($this->target::creatables()) as $creatable) {
             $rules[$creatable] = 'array';
         }
+
         return $rules;
     }
 

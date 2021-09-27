@@ -2,14 +2,13 @@
 
 namespace berthott\Crudable\Services;
 
-use berthott\Crudable\Models\Contracts\Crudable;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CrudQueryService
 {
     /**
-     * Attach an existing relation for the model
+     * Attach an existing relation for the model.
      */
     public function getQuery(string $class): Collection
     {
@@ -23,7 +22,7 @@ class CrudQueryService
     }
 
     /**
-     * Get the user defined array from the options
+     * Get the user defined array from the options.
      */
     protected function fromOptions(string $class, string $attribute): array
     {
@@ -31,6 +30,7 @@ class CrudQueryService
         if (array_key_exists($attribute, $options)) {
             return $options[$attribute];
         }
+
         return [];
     }
 }

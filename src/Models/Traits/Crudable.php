@@ -7,7 +7,7 @@ trait Crudable
     /**
      * Returns an array of query builder options.
      * See https://spatie.be/docs/laravel-query-builder/v3/introduction
-     * Options are: filter, sort, include, fields, append
+     * Options are: filter, sort, include, fields, append.
      */
     public static function queryBuilderOptions(): array
     {
@@ -38,7 +38,7 @@ trait Crudable
      * 'relationMethod' => [
      *      'class' => Relation::class,
      *      'creationMethod' => Closure,
-     * ]
+     * ].
      */
     public static function creatables(): array
     {
