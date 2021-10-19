@@ -32,7 +32,7 @@ class CrudableTest extends TestCase
     public function test_show_user(): void
     {
         $user = User::factory()->create();
-        $this->get(route('users.index'))
+        $this->get(route('users.show', ['user' => $user->id]))
             ->assertStatus(200)
             ->assertJsonFragment($user->toArray());
     }
