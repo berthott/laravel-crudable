@@ -68,4 +68,12 @@ class CrudController implements Targetable
 
         return $ret;
     }
+
+    /**
+     * Display the schema data.
+     */
+    public function schema(): array
+    {
+        return $this->target::schema();
+    }
 }

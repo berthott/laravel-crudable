@@ -2,6 +2,10 @@
 
 namespace berthott\Crudable\Models\Traits;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+
 trait Crudable
 {
     /**
@@ -48,5 +52,38 @@ trait Crudable
     public static function rules(mixed $id): array
     {
         return [];
+    }
+
+    /**
+     * The single name of the model.
+     */
+    public static function singleName(): string
+    {
+        return Str::snake(class_basename(get_called_class()));
+    }
+
+    /**
+     * The entity table name of the model.
+     */
+    public static function entityTableName(): string
+    {
+        return Str::snake(Str::pluralStudly(class_basename(get_called_class())));
+    }
+
+    /**
+     * Returns the schema of the current entity.
+     */
+    public static function schema(): array
+    {
+        if (!Schema::hasTable(self::entityTableName())) {
+            return [];
+        }
+        return array_map(function ($column) {
+            $type = DB::getSchemaBuilder()->getColumnType(self::entityTableName(), $column);
+            return [
+                'column' => $column,
+                'type' => $type,
+            ];
+        }, Schema::getColumnListing(self::entityTableName()));
     }
 }

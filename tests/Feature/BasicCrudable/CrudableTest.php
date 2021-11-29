@@ -13,7 +13,9 @@ class CrudableTest extends TestCase
             'users.store',
             'users.show',
             'users.update',
-            'users.destroy'
+            'users.destroy',
+
+            'users.schema',
         ];
         $registeredRoutes = array_keys(Route::getRoutes()->getRoutesByName());
         foreach ($expectedRoutes as $route) {
@@ -59,6 +61,17 @@ class CrudableTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'lastname' => $userToStore->lastname
         ]);
+    }
+
+    public function test_schema_route(): void
+    {
+        $this->get(route('users.schema'))
+            ->assertStatus(200)
+            ->assertJsonFragment(['column' => 'id', 'type' => 'integer'])
+            ->assertJsonFragment(['column' => 'firstname', 'type' => 'string'])
+            ->assertJsonFragment(['column' => 'lastname', 'type' => 'string'])
+            ->assertJsonFragment(['column' => 'created_at', 'type' => 'datetime'])
+            ->assertJsonFragment(['column' => 'updated_at', 'type' => 'datetime']);
     }
 
     public function test_update_user(): void
