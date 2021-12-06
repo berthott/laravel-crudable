@@ -71,7 +71,8 @@ class CrudableTest extends TestCase
             ->assertJsonFragment(['column' => 'firstname', 'type' => 'string'])
             ->assertJsonFragment(['column' => 'lastname', 'type' => 'string'])
             ->assertJsonFragment(['column' => 'created_at', 'type' => 'datetime'])
-            ->assertJsonFragment(['column' => 'updated_at', 'type' => 'datetime']);
+            ->assertJsonFragment(['column' => 'updated_at', 'type' => 'datetime'])
+            ->assertJsonFragment(['column' => 'test', 'type' => 'appends']);
     }
 
     public function test_update_user(): void

@@ -78,6 +78,14 @@ trait Crudable
         if (!Schema::hasTable(self::entityTableName())) {
             return [];
         }
+        return array_merge(self::buildDbSchema(), self::buildAppendsSchema());
+    }
+
+    /**
+     * Builds the schema of the current entity.
+     */
+    private static function buildDbSchema(): array
+    {
         return array_map(function ($column) {
             $type = DB::getSchemaBuilder()->getColumnType(self::entityTableName(), $column);
             return [
@@ -85,5 +93,19 @@ trait Crudable
                 'type' => $type,
             ];
         }, Schema::getColumnListing(self::entityTableName()));
+    }
+
+    /**
+     * Builds the schema of the current entity.
+     */
+    private static function buildAppendsSchema(): array
+    {
+
+        return array_map(function ($appends) {
+            return [
+                'column' => $appends,
+                'type' => 'appends',
+            ];
+        }, self::newModelInstance()->appends);
     }
 }

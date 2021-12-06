@@ -20,6 +20,10 @@ class User extends Model
         'lastname',
     ];
 
+    protected $appends = [
+        'test',
+    ];
+
     /**
      * @param  mixed  $id
      * @return array
@@ -34,5 +38,10 @@ class User extends Model
     protected static function newFactory()
     {
         return UserFactory::new();
+    }
+
+    public function getTestAttribute()
+    {
+        return 'test';
     }
 }
