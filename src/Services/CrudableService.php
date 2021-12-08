@@ -5,6 +5,7 @@ namespace berthott\Crudable\Services;
 use HaydenPierce\ClassFinder\ClassFinder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class CrudableService
 {
@@ -53,13 +54,13 @@ class CrudableService
      */
     public function getTarget(): string
     {
-        if (!request()->segments() || !$this->crudables) {
+        if (!request()->segments() || $this->crudables->isEmpty()) {
             return '';
         }
-        $model = Str::studly(Str::singular(request()->segment(count(explode('/', config('crudable.prefix'))) + 1)));
+        $model = Str::studly(Str::singular(request()->segment(count(explode('/', config('permissions.prefix'))) + 1)));
 
-        return $this->crudables->first(function ($crudable) use ($model) {
-            return Str::contains($crudable, $model);
-        });
+        return $this->crudables->first(function ($class) use ($model) {
+            return Arr::last(explode('\\', $class)) === $model;
+        }) ?: '';
     }
 }
