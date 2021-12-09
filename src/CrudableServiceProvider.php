@@ -31,9 +31,6 @@ class CrudableServiceProvider extends ServiceProvider
             return new CrudQueryService();
         });
 
-        // bind exception singleton
-        $this->app->singleton(ExceptionHandler::class, Handler::class);
-
         // add config
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'crudable');
         $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');

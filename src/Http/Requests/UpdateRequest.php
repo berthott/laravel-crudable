@@ -2,8 +2,10 @@
 
 namespace berthott\Crudable\Http\Requests;
 
+use berthott\Crudable\Exceptions\ValidationException;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -25,6 +27,14 @@ class UpdateRequest extends FormRequest implements Targetable
             $this->buildCreatableRules(),  // default creatables rules
             $this->target::rules($this->getPrimaryId()), // target rules
         );
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw (new ValidationException($this->validator->errors()->messages()));
     }
 
     protected function buildAttachableRules(): array
