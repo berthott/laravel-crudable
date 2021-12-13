@@ -56,7 +56,7 @@ class CrudableTest extends TestCase
     {
         $userToStore = User::make(['lastname' => 'Test']);
         $this->post(route('users.store'), $userToStore->toArray())
-            ->assertStatus(200)
+            ->assertStatus(422)
             ->assertJsonValidationErrors('firstname');
         $this->assertDatabaseMissing('users', [
             'lastname' => $userToStore->lastname
