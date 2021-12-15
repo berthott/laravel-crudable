@@ -6,6 +6,9 @@ use HaydenPierce\ClassFinder\ClassFinder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
+
+const CACHE_KEY = 'CrudableService-Cache-Key';
 
 class CrudableService
 {
@@ -35,18 +38,20 @@ class CrudableService
      */
     private function initCrudableClasses(): void
     {
-        $crudables = [];
-        $namespaces = config('crudable.namespace');
-        foreach (is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
-            foreach (ClassFinder::getClassesInNamespace($namespace, ClassFinder::RECURSIVE_MODE) as $class) {
-                foreach (class_uses_recursive($class) as $trait) {
-                    if ('berthott\Crudable\Models\Traits\Crudable' == $trait) {
-                        array_push($crudables, $class);
+        $this->crudables = Cache::sear(CACHE_KEY, function () {
+            $crudables = [];
+            $namespaces = config('crudable.namespace');
+            foreach (is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
+                foreach (ClassFinder::getClassesInNamespace($namespace, ClassFinder::RECURSIVE_MODE) as $class) {
+                    foreach (class_uses_recursive($class) as $trait) {
+                        if ('berthott\Crudable\Models\Traits\Crudable' == $trait) {
+                            array_push($crudables, $class);
+                        }
                     }
                 }
             }
-        }
-        $this->crudables = collect($crudables);
+            return collect($crudables);
+        });
     }
 
     /**
