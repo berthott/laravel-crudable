@@ -56,6 +56,7 @@ class CrudableServiceProvider extends ServiceProvider
             foreach (Crudable::getCrudableClasses() as $crudable) {
                 $table = $crudable::entityTableName();
                 Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
+                Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
                 Route::apiResource($table, CrudController::class, $crudable::routeOptions());
             }
         });

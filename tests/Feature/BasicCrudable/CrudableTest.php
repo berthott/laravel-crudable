@@ -99,4 +99,25 @@ class CrudableTest extends TestCase
             ->assertStatus(200);
         $this->assertModelMissing($user);
     }
+
+    public function test_delete_many_users(): void
+    {
+        $users = User::factory()->count(10)->create();
+        foreach ($users as $user) {
+            $this->assertModelExists($user);
+        }
+        $usersToDelete = $users->slice(0, 5);
+        $usersToPersist = $users->slice(5, 5);
+        $this->delete(route('users.destroy_many'), ['ids' => $usersToDelete->pluck('id')->toArray()])
+            ->assertStatus(200);
+        foreach ($usersToDelete as $user) {
+            $this->assertModelMissing($user);
+        }
+        foreach ($usersToPersist as $user) {
+            $this->assertModelExists($user);
+        }
+        $this->delete(route('users.destroy_many'), ['ids' => [11, 12]])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['ids.0', 'ids.1']);
+    }
 }

@@ -4,6 +4,7 @@ namespace berthott\Crudable\Http\Controllers;
 
 use berthott\Crudable\Facades\CrudQuery;
 use berthott\Crudable\Facades\CrudRelations;
+use berthott\Crudable\Http\Requests\DeleteManyRequest;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 
 class CrudController implements Targetable
 {
@@ -64,6 +66,17 @@ class CrudController implements Targetable
     public function destroy(mixed $id): int
     {
         $ret = $this->target::destroy($id);
+        CrudRelations::deleteUnrelatedCreatables($this->target);
+
+        return $ret;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy_many(DeleteManyRequest $request): int
+    {
+        $ret = $this->target::destroy($request->ids);
         CrudRelations::deleteUnrelatedCreatables($this->target);
 
         return $ret;
