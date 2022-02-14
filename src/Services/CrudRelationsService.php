@@ -27,6 +27,7 @@ class CrudRelationsService
                 $relation->invoke($model)->detach();
                 $relation->invoke($model)->attach($data[$relation->name]);
                 $model->load($relation->name);
+                $this->sendUpdateEvent($model);
             }
         }
 
@@ -51,6 +52,7 @@ class CrudRelationsService
                 // delete unrelated
                 $creatables[$relation->name]['class']::doesntHave($model->getTable())->delete();
                 $model->load($relation->name);
+                $this->sendUpdateEvent($model);
             }
         }
 
@@ -66,13 +68,14 @@ class CrudRelationsService
         $instance = new $class();
         foreach ($this->getPossibleRelations($class, array_keys($creatables)) as $relation) {
             $creatables[$relation->name]['class']::doesntHave($instance->getTable())->delete();
+            $this->sendUpdateEvent($instance);
         }
     }
 
     /**
      * Reflect the given model and search for relations based on the relation name.
      */
-    public function getPossibleRelations(Model|string $model, array $methods): array
+    private function getPossibleRelations(Model|string $model, array $methods): array
     {
         $reflector = new ReflectionClass($model);
         $relations = [];
@@ -83,5 +86,13 @@ class CrudRelationsService
         }
 
         return $relations;
+    }
+
+    /**
+     * Send an update event
+     */
+    private function sendUpdateEvent(Model $model)
+    {
+        event('eloquent.updated: '.get_class($model), $model);
     }
 }
