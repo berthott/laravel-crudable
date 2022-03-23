@@ -118,25 +118,4 @@ class QueryBuilderTest extends TestCase
         ]))
             ->assertStatus(400);
     }
-
-    public function test_append_success(): void
-    {
-        $user = User::factory()->create();
-        $this->get(route('users.index'))
-            ->assertStatus(200)
-            ->assertJsonMissing(['fullname' => "$user->firstname $user->lastname"]);
-        $this->get(route('users.index', [
-            'append' => 'fullname'
-        ]))
-            ->assertStatus(200)
-            ->assertJsonFragment(['fullname' => "$user->firstname $user->lastname"]);
-    }
-
-    public function test_append_fail(): void
-    {
-        $this->get(route('users.index', [
-            'append' => 'wrong'
-        ]))
-            ->assertStatus(400);
-    }
 }

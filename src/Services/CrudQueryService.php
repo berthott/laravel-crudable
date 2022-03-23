@@ -17,7 +17,6 @@ class CrudQueryService
             ->allowedSorts($this->fromOptions($class, 'sort'))
             ->allowedFields($this->fromOptions($class, 'fields'))
             ->allowedIncludes($this->fromOptions($class, 'include'))
-            ->allowedAppends($this->fromOptions($class, 'append'))
             ->get();
     }
 
