@@ -54,10 +54,12 @@ class CrudableServiceProvider extends ServiceProvider
         // add routes
         Route::group($this->routeConfiguration(), function () {
             foreach (Crudable::getCrudableClasses() as $crudable) {
-                $table = $crudable::entityTableName();
-                Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
-                Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
-                Route::apiResource($table, CrudController::class, $crudable::routeOptions());
+                Route::group(['middleware' => $crudable::middleware()], function () use ($crudable) {
+                    $table = $crudable::entityTableName();
+                    Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
+                    Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
+                    Route::apiResource($table, CrudController::class, $crudable::routeOptions());
+                });
             }
         });
     }

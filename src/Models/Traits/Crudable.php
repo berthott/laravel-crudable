@@ -49,6 +49,14 @@ trait Crudable
         return [];
     }
 
+    /**
+     * Returns an array of additional middleware.
+     */
+    public static function middleware(): array
+    {
+        return [];
+    }
+
     public static function rules(mixed $id): array
     {
         return [];
