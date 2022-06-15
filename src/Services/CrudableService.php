@@ -42,7 +42,7 @@ class CrudableService
             $crudables = [];
             $namespaces = config('crudable.namespace');
             foreach (is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
-                foreach (ClassFinder::getClassesInNamespace($namespace, ClassFinder::RECURSIVE_MODE) as $class) {
+                foreach (ClassFinder::getClassesInNamespace($namespace, config('crudable.namespace_mode')) as $class) {
                     foreach (class_uses_recursive($class) as $trait) {
                         if ('berthott\Crudable\Models\Traits\Crudable' == $trait) {
                             array_push($crudables, $class);
