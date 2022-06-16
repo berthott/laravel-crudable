@@ -28,6 +28,24 @@ trait Crudable
     }
 
     /**
+     * Register routes that should be evaluated 
+     * before the CRUD routes.
+     */
+    public static function routesBefore()
+    {
+        //
+    }
+
+    /**
+     * Register routes that should be evaluated 
+     * after the CRUD routes.
+     */
+    public static function routesAfter()
+    {
+        //
+    }
+
+    /**
      * Returns an array of relations that should
      * be attached automatically.
      */
