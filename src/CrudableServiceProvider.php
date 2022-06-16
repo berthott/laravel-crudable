@@ -56,8 +56,13 @@ class CrudableServiceProvider extends ServiceProvider
             foreach (Crudable::getCrudableClasses() as $crudable) {
                 Route::group(['middleware' => $crudable::middleware()], function () use ($crudable) {
                     $table = $crudable::entityTableName();
-                    Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
-                    Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
+                    $crudRoutes = $this->getCrudRoutes($crudable::routeOptions());
+                    if (in_array('schema', $crudRoutes)) {
+                        Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
+                    }
+                    if (in_array('destroy_many', $crudRoutes)) {
+                        Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
+                    }
                     Route::apiResource($table, CrudController::class, $crudable::routeOptions());
                 });
             }
@@ -70,5 +75,23 @@ class CrudableServiceProvider extends ServiceProvider
             'middleware' => config('crudable.middleware'),
             'prefix' => config('crudable.prefix'),
         ];
+    }
+
+    /**
+     * Get the applicable resource methods.
+     */
+    protected function getCrudRoutes(array $options): array
+    {
+        $methods = ['index', 'show', 'store', 'update', 'destroy', 'schema', 'destroy_many'];
+
+        if (isset($options['only'])) {
+            $methods = array_intersect($methods, (array) $options['only']);
+        }
+
+        if (isset($options['except'])) {
+            $methods = array_diff($methods, (array) $options['except']);
+        }
+
+        return $methods;
     }
 }

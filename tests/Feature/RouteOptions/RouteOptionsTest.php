@@ -16,6 +16,8 @@ class RouteOptionsTest extends TestCase
             'users.show',
             'users.update',
             'users.destroy',
+            'users.destroy_many',
+            'users.schema',
         ];
         $registeredRoutes = array_keys(Route::getRoutes()->getRoutesByName());
         foreach ($expectedRoutes as $route) {
@@ -33,9 +35,11 @@ class RouteOptionsTest extends TestCase
             'tags.store',
             'tags.show',
             'tags.update',
+            'tags.schema',
         ];
         $unexpectedRoutes = [
             'tags.destroy',
+            'tags.destroy_many',
         ];
         $registeredRoutes = array_keys(Route::getRoutes()->getRoutesByName());
         foreach ($expectedRoutes as $route) {

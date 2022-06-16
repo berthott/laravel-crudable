@@ -16,7 +16,7 @@ class Tag extends Model
     public static function routeOptions(): array
     {
         return [
-            'except' => ['destroy']
+            'except' => ['destroy', 'destroy_many']
         ];
     }
 }
