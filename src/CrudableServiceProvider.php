@@ -2,14 +2,12 @@
 
 namespace berthott\Crudable;
 
-use berthott\Crudable\Exceptions\Handler;
 use berthott\Crudable\Facades\Crudable;
 use berthott\Crudable\Http\Controllers\CrudController;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Services\CrudableService;
 use berthott\Crudable\Services\CrudQueryService;
 use berthott\Crudable\Services\CrudRelationsService;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -52,11 +50,11 @@ class CrudableServiceProvider extends ServiceProvider
         ], 'config');
 
         // add routes
-        Route::group($this->routeConfiguration(), function () {
-            foreach (Crudable::getCrudableClasses() as $crudable) {
+        foreach (Crudable::getCrudableClasses() as $crudable) {
+            Route::group($this->routeConfiguration(), function () use ($crudable) {
+                $crudable::routesBefore();
                 Route::group(['middleware' => $crudable::middleware()], function () use ($crudable) {
                     $table = $crudable::entityTableName();
-                    $crudable::routesBefore();
                     $crudRoutes = $this->getCrudRoutes($crudable::routeOptions());
                     if (in_array('schema', $crudRoutes)) {
                         Route::get("{$table}/schema", [CrudController::class, 'schema'])->name($table.'.schema');
@@ -65,10 +63,10 @@ class CrudableServiceProvider extends ServiceProvider
                         Route::delete("{$table}/destroy_many", [CrudController::class, 'destroy_many'])->name($table.'.destroy_many');
                     }
                     Route::apiResource($table, CrudController::class, $crudable::routeOptions());
-                    $crudable::routesAfter();
                 });
-            }
-        });
+                $crudable::routesAfter();
+            });
+        }
     }
 
     protected function routeConfiguration(): array
