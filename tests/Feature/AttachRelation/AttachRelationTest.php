@@ -43,6 +43,28 @@ class AttachRelationTest extends TestCase
         ]);
     }
 
+    public function test_single_relation_creation(): void
+    {
+        $role = Role::factory()->create();
+        $this->assertModelExists($role);
+        $userToStore = User::factory()->make();
+        $id = $this->post(route('users.store'), array_merge(
+            $userToStore->toArray(),
+            ['role' => $role->id],
+        ))
+            ->assertStatus(201)
+            ->assertJson(['name' => $userToStore->name])
+            ->json()['id'];
+        $this->assertDatabaseHas('users', [
+            'id' => $id,
+            'name' => $userToStore->name
+        ]);
+        $this->assertDatabaseHas('role_user', [
+            'role_id' => $role->id,
+            'user_id' => $id,
+        ]);
+    }
+
     public function test_relation_update(): void
     {
         $roles = Role::factory()->count(2)->create();

@@ -3,6 +3,7 @@
 namespace berthott\Crudable\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use ReflectionClass;
 
 class CrudRelationsService
@@ -23,9 +24,10 @@ class CrudRelationsService
     public function attachExisting(Model $model, array $data): Model
     {
         foreach ($this->getPossibleRelations($model, $model->attachables()) as $relation) {
-            if (array_key_exists($relation->name, $data)) {
+            $key = $this->getDataKey($relation->name, $data);
+            if ($key) {
                 $relation->invoke($model)->detach();
-                $relation->invoke($model)->attach($data[$relation->name]);
+                $relation->invoke($model)->attach($data[$key]);
                 $model->load($relation->name);
                 $this->sendUpdateEvent($model);
             }
@@ -41,11 +43,15 @@ class CrudRelationsService
     {
         $creatables = $model->creatables();
         foreach ($this->getPossibleRelations($model, array_keys($creatables)) as $relation) {
-            if (array_key_exists($relation->name, $data)) {
+            $key = $this->getDataKey($relation->name, $data);
+            if ($key) {
                 $relation->invoke($model)->detach();
                 $relationClass = $creatables[$relation->name]['class'];
                 $creationMethod = $creatables[$relation->name]['creationMethod'];
-                foreach ($data[$relation->name] as $dataEntry) {
+                if (!is_array($data[$key])) {
+                    $data[$key] = [$data[$key]];
+                }
+                foreach ($data[$key] as $dataEntry) {
                     $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
                     $relation->invoke($model)->attach($relationInstance);
                 }
@@ -94,5 +100,20 @@ class CrudRelationsService
     private function sendUpdateEvent(Model $model)
     {
         event('eloquent.updated: '.get_class($model), $model);
+    }
+
+    /**
+     * Get plural or singular data key
+     */
+    private function getDataKey(string $relationName, array $data): string | null
+    {
+        $singleName = Str::singular($relationName);
+        if (array_key_exists($relationName, $data)) {
+            return $relationName;
+        } else if (array_key_exists($singleName, $data)) {
+            return $singleName;
+        } else {
+            return null;
+        }
     }
 }

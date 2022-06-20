@@ -21,11 +21,33 @@ class AttachOrCreateRelationTest extends TestCase
         }
     }
 
-    public function test_create_tag(): void
+    public function test_create_tags(): void
     {
         $tag = 'TestTag';
         $userToStore = User::factory()->make([
             'tags' => [$tag],
+        ]);
+        $id = $this->post(route('users.store'), $userToStore->toArray())
+            ->assertStatus(201)
+            ->assertJsonFragment(['name' => $tag])
+            ->json()['id'];
+        $this->assertDatabaseHas('users', [
+            'id' => $id,
+            'name' => $userToStore->name
+        ]);
+        $this->assertDatabaseHas('tags', [
+            'name' => $tag
+        ]);
+        $this->assertDatabaseHas('tag_user', [
+            'user_id' => $id
+        ]);
+    }
+
+    public function test_create_tag(): void
+    {
+        $tag = 'TestTag';
+        $userToStore = User::factory()->make([
+            'tag' => $tag,
         ]);
         $id = $this->post(route('users.store'), $userToStore->toArray())
             ->assertStatus(201)
