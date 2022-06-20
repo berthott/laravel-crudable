@@ -68,6 +68,16 @@ trait Crudable
     }
 
     /**
+     * Returns an array of custom relations that 
+     * will be looped through.
+     * 'relation' => Closure
+     */
+    public static function customRelations(): array
+    {
+        return [];
+    }
+
+    /**
      * Returns an array of additional middleware.
      */
     public static function middleware(): array

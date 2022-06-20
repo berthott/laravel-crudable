@@ -14,8 +14,8 @@ class CrudRelationsService
     public function attach(Model $model, array $data): Model
     {
         $model = $this->attachExisting($model, $data);
-
-        return $this->attachOrCreate($model, $data);
+        $model = $this->attachOrCreate($model, $data);
+        return $this->loopThroughCustomRelations($model, $data);
     }
 
     /**
@@ -58,6 +58,24 @@ class CrudRelationsService
                 // delete unrelated
                 $creatables[$relation->name]['class']::doesntHave($model->getTable())->delete();
                 $model->load($relation->name);
+                $this->sendUpdateEvent($model);
+            }
+        }
+
+        return $model;
+    }
+
+    /**
+     * Loop through the custom relations of the model.
+     */
+    public function loopThroughCustomRelations(Model $model, array $data): Model
+    {
+        $customRelations = $model->customRelations();
+        foreach ($this->getPossibleRelations($model, array_keys($customRelations)) as $relation) {
+            $key = $this->getDataKey($relation->name, $data);
+            if ($key) {
+                $creationMethod = $customRelations[$relation->name];
+                $creationMethod($model, $data);
                 $this->sendUpdateEvent($model);
             }
         }

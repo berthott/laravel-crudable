@@ -25,6 +25,7 @@ class UpdateRequest extends FormRequest implements Targetable
             array_fill_keys($this->getInstance()->getFillable(), 'nullable'),  // default fillable rules
             $this->buildAttachableRules(),  // default attachables rules
             $this->buildCreatableRules(),  // default creatables rules
+            $this->buildCustomRelationRules(),  // default custom relation rules
             $this->target::rules($this->getPrimaryId()), // target rules
         );
     }
@@ -55,6 +56,17 @@ class UpdateRequest extends FormRequest implements Targetable
         foreach (array_keys($this->target::creatables()) as $creatable) {
             $rules[Str::singular($creatable)] = 'nullable';
             $rules[$creatable] = 'array';
+        }
+
+        return $rules;
+    }
+
+    protected function buildCustomRelationRules(): array
+    {
+        $rules = [];
+        foreach (array_keys($this->target::customRelations()) as $customRelations) {
+            $rules[Str::singular($customRelations)] = 'nullable';
+            $rules[$customRelations] = 'array';
         }
 
         return $rules;
