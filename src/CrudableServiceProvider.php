@@ -8,6 +8,7 @@ use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Services\CrudableService;
 use berthott\Crudable\Services\CrudQueryService;
 use berthott\Crudable\Services\CrudRelationsService;
+use berthott\Crudable\Services\ScopableService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +22,9 @@ class CrudableServiceProvider extends ServiceProvider
         // bind singletons
         $this->app->singleton('Crudable', function () {
             return new CrudableService();
+        });
+        $this->app->singleton('Scopable', function () {
+            return new ScopableService();
         });
         $this->app->singleton('CrudRelations', function () {
             return new CrudRelationsService();

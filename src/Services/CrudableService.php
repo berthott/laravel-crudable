@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
-const CACHE_KEY = 'CrudableService-Cache-Key';
+const CRUDABLE_CACHE_KEY = 'CrudableService-Cache-Key';
 
 class CrudableService
 {
@@ -38,7 +38,7 @@ class CrudableService
      */
     private function initCrudableClasses(): void
     {
-        $this->crudables = Cache::sear(CACHE_KEY, function () {
+        $this->crudables = Cache::sear(CRUDABLE_CACHE_KEY, function () {
             $crudables = [];
             $namespaces = config('crudable.namespace');
             foreach (is_array($namespaces) ? $namespaces : [$namespaces] as $namespace) {
