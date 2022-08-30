@@ -17,6 +17,16 @@ class EntityOne extends Model
      */
     protected $fillable = [
         'name',
+        'scopable_one_id',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'scopable_one_id' => 'integer',
     ];
 
     /**
@@ -27,6 +37,7 @@ class EntityOne extends Model
     {
         return [
             'name' => 'required',
+            'scopable_one_id' => 'required',
         ];
     }
 
@@ -35,7 +46,7 @@ class EntityOne extends Model
         return EntityOneFactory::new();
     }
 
-    public function scopableOne()
+    public function scopable_one()
     {
         return $this->belongsTo(ScopableOne::class);
     }

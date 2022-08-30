@@ -27,6 +27,7 @@ class EntityMany extends Model
     {
         return [
             'name' => 'required',
+            'scopable_manies.*' => 'nullable|numeric'
         ];
     }
 
@@ -35,7 +36,18 @@ class EntityMany extends Model
         return EntityManyFactory::new();
     }
 
-    public function scopableManies()
+    /**
+     * Returns an array of foreign keys that should
+     * be attached automatically.
+     */
+    public static function attachables(): array
+    {
+        return [
+            'scopable_manies',
+        ];
+    }
+
+    public function scopable_manies()
     {
         return $this->belongsToMany(ScopableMany::class);
     }

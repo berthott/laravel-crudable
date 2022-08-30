@@ -5,6 +5,7 @@ namespace berthott\Crudable\Tests\Feature\Scopable;
 use berthott\Crudable\CrudableServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -75,7 +76,12 @@ abstract class TestCase extends BaseTestCase
             $table->bigIncrements('id');
             $table->unsignedBigInteger('scopable_many_id');
             $table->unsignedBigInteger('entity_many_id');
-            $table->timestamps();
+
+            $table->foreign('scopable_many_id')->references('id')->on('scopable_manies')->onDelete('cascade');
+            $table->foreign('entity_many_id')->references('id')->on('entity_manies')->onDelete('cascade');
         });
+
+        // for delete cascadation, is disabled in sqlite by default
+        DB::statement(DB::raw('PRAGMA foreign_keys=1'));
     }
 }

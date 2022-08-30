@@ -36,12 +36,12 @@ class User extends Authenticatable
         return UserFactory::new();
     }
 
-    public function scopableOne()
+    public function scopable_one()
     {
         return $this->belongsTo(ScopableOne::class);
     }
 
-    public function scopableManies()
+    public function scopable_manies()
     {
         return $this->belongsToMany(ScopableMany::class);
     }

@@ -76,8 +76,8 @@ class ScopableService
         $relations = [];
         foreach ($reflector->getMethods() as $reflectionMethod) {
             foreach ($this->classes->toArray() as $scopable) {
-                if (Str::camel(Str::plural(Arr::last(explode('\\', $scopable)))) === $reflectionMethod->name
-                 || Str::camel(Arr::last(explode('\\', $scopable))) === $reflectionMethod->name) {
+                if (Str::snake(Str::plural(Arr::last(explode('\\', $scopable)))) === $reflectionMethod->name
+                 || Str::snake(Arr::last(explode('\\', $scopable))) === $reflectionMethod->name) {
                     $relations[] = $reflectionMethod;
                 }
             }
