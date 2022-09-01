@@ -2,6 +2,8 @@
 
 namespace berthott\Crudable\Services;
 
+use berthott\Crudable\Exceptions\ForbiddenException;
+use Closure;
 use HaydenPierce\ClassFinder\ClassFinder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -100,8 +102,7 @@ class ScopableService
                 if ($modelInstances->intersect($userInstances)->isEmpty()) {
                     $allowed = false;
                 }
-            }
-            else {
+            } else {
                 if ($modelInstances->id != $userInstances->id) {
                     $allowed = false;
                 }
@@ -113,10 +114,26 @@ class ScopableService
     /**
      * Filter models with allowed scope
      */
-    public function filterForScopes(Collection $models): Collection
+    public function filterScopes(Collection $models): Collection
     {
-        return $models->filter(function($model) {
+        return $models->filter(function ($model) {
             return $this->isAllowedInScopes($model);
         });
+    }
+
+    /**
+     * Filter models with allowed scope
+     * 
+     * @throws ForbiddenException
+     */
+    public function checkScopes(Model $model, Closure $callback = NULL): Model
+    {
+        if (!$this->isAllowedInScopes($model)) {
+            if ($callback) {
+                $callback($model);
+            }
+            throw new ForbiddenException;
+        }
+        return $model;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace berthott\Crudable\Http\Controllers;
 
-use berthott\Crudable\Exceptions\ForbiddenException;
 use berthott\Crudable\Facades\CrudQuery;
 use berthott\Crudable\Facades\CrudRelations;
 use berthott\Crudable\Facades\Scopable;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\Request;
 
 class CrudController implements Targetable
 {
@@ -29,7 +27,7 @@ class CrudController implements Targetable
      */
     public function index(): Collection
     {
-        return Scopable::filterForScopes(CrudQuery::getQuery($this->target));
+        return Scopable::filterScopes(CrudQuery::getQuery($this->target));
     }
 
     /**
@@ -37,11 +35,7 @@ class CrudController implements Targetable
      */
     public function show(mixed $id): Model
     {
-        $instance = $this->target::findOrFail($id);
-        if (!Scopable::isAllowedInScopes($instance)) {
-            throw new ForbiddenException;
-        }
-        return $instance;
+        return Scopable::checkScopes($this->target::findOrFail($id));
     }
 
     /**
@@ -50,13 +44,13 @@ class CrudController implements Targetable
     public function store(UpdateRequest $request): Model
     {
         $validated = $request->validated();
-        $instance = CrudRelations::attach($this->target::create($validated), $validated);
 
-        if (!Scopable::isAllowedInScopes($instance)) {
-            $instance->delete();
-            throw new ForbiddenException;
-        }
-        return $instance;
+        return Scopable::checkScopes(
+            CrudRelations::attach($this->target::create($validated), $validated),
+            function($instance) {
+                $instance->delete();
+            }
+        );
     }
 
     /**
@@ -68,14 +62,14 @@ class CrudController implements Targetable
         $validated = $request->validated();
         $backup = $instance->fresh();
         $instance->update($validated);
-        $ret = CrudRelations::attach($instance, $validated);
 
-        if (!Scopable::isAllowedInScopes($ret)) {
-            $ret->delete();
-            $backup->save();
-            throw new ForbiddenException;
-        }
-        return $ret;
+        return Scopable::checkScopes(
+            CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated),
+            function($instance) use ($backup) {
+                $instance->delete();
+                $backup->save();
+            }
+        );
     }
 
     /**
@@ -83,9 +77,7 @@ class CrudController implements Targetable
      */
     public function destroy(mixed $id): int
     {
-        if (!Scopable::isAllowedInScopes($this->target::findOrFail($id))) {
-            throw new ForbiddenException;
-        }
+        Scopable::checkScopes($this->target::findOrFail($id));
         $ret = $this->target::destroy($id);
         CrudRelations::deleteUnrelatedCreatables($this->target);
 
@@ -97,10 +89,8 @@ class CrudController implements Targetable
      */
     public function destroy_many(DeleteManyRequest $request): int
     {
-        foreach ($request->ids as $id) {
-            if (!Scopable::isAllowedInScopes($this->target::findOrFail($id))) {
-                throw new ForbiddenException;
-            }
+        foreach ($request->ids as $id) { 
+            Scopable::checkScopes($this->target::findOrFail($id));
         }
         $ret = $this->target::destroy($request->ids);
         CrudRelations::deleteUnrelatedCreatables($this->target);
