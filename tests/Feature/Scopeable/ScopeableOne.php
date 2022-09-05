@@ -1,13 +1,13 @@
 <?php
 
-namespace berthott\Crudable\Tests\Feature\Scopable;
+namespace berthott\Crudable\Tests\Feature\Scopeable;
 
 use berthott\Crudable\Models\Traits\Crudable;
 use berthott\Scopeable\Models\Traits\Scopeable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ScopableMany extends Model
+class ScopeableOne extends Model
 {
     use Crudable, HasFactory, Scopeable;
 
@@ -33,6 +33,6 @@ class ScopableMany extends Model
 
     protected static function newFactory()
     {
-        return ScopableManyFactory::new();
+        return ScopeableOneFactory::new();
     }
 }

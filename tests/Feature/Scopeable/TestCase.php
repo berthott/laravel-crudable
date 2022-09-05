@@ -1,6 +1,6 @@
 <?php
 
-namespace berthott\Crudable\Tests\Feature\Scopable;
+namespace berthott\Crudable\Tests\Feature\Scopeable;
 
 use berthott\Crudable\CrudableServiceProvider;
 use berthott\Scopeable\ScopeableServiceProvider;
@@ -34,13 +34,13 @@ abstract class TestCase extends BaseTestCase
 
     private function setUpUserTable(): void
     {
-        Schema::create('scopable_ones', function (Blueprint $table) {
+        Schema::create('scopeable_ones', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->timestamps();
         });
 
-        Schema::create('scopable_manies', function (Blueprint $table) {
+        Schema::create('scopeable_manies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->timestamps();
@@ -49,23 +49,23 @@ abstract class TestCase extends BaseTestCase
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->unsignedBigInteger('scopable_one_id')->nullable();
+            $table->unsignedBigInteger('scopeable_one_id')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('scopable_many_user', function (Blueprint $table) {
+        Schema::create('scopeable_many_user', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('scopable_many_id');
+            $table->unsignedBigInteger('scopeable_many_id');
             $table->unsignedBigInteger('user_id');
 
-            $table->foreign('scopable_many_id')->references('id')->on('scopable_manies')->onDelete('cascade');
+            $table->foreign('scopeable_many_id')->references('id')->on('scopeable_manies')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::create('entity_ones', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->unsignedBigInteger('scopable_one_id');
+            $table->unsignedBigInteger('scopeable_one_id');
             $table->timestamps();
         });
 
@@ -75,12 +75,12 @@ abstract class TestCase extends BaseTestCase
             $table->timestamps();
         });
 
-        Schema::create('entity_many_scopable_many', function (Blueprint $table) {
+        Schema::create('entity_many_scopeable_many', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('scopable_many_id');
+            $table->unsignedBigInteger('scopeable_many_id');
             $table->unsignedBigInteger('entity_many_id');
 
-            $table->foreign('scopable_many_id')->references('id')->on('scopable_manies')->onDelete('cascade');
+            $table->foreign('scopeable_many_id')->references('id')->on('scopeable_manies')->onDelete('cascade');
             $table->foreign('entity_many_id')->references('id')->on('entity_manies')->onDelete('cascade');
         });
 

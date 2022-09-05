@@ -1,12 +1,12 @@
 <?php
 
-namespace berthott\Crudable\Tests\Feature\Scopable;
+namespace berthott\Crudable\Tests\Feature\Scopeable;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ScopableOneFactory extends Factory
+class ScopeableManyFactory extends Factory
 {
-    protected $model = ScopableOne::class;
+    protected $model = ScopeableMany::class;
 
     public function definition()
     {

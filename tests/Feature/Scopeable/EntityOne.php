@@ -1,6 +1,6 @@
 <?php
 
-namespace berthott\Crudable\Tests\Feature\Scopable;
+namespace berthott\Crudable\Tests\Feature\Scopeable;
 
 use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +17,7 @@ class EntityOne extends Model
      */
     protected $fillable = [
         'name',
-        'scopable_one_id',
+        'scopeable_one_id',
     ];
 
     /**
@@ -26,7 +26,7 @@ class EntityOne extends Model
      * @var array
      */
     protected $casts = [
-        'scopable_one_id' => 'integer',
+        'scopeable_one_id' => 'integer',
     ];
 
     /**
@@ -37,7 +37,7 @@ class EntityOne extends Model
     {
         return [
             'name' => 'required',
-            'scopable_one_id' => 'required',
+            'scopeable_one_id' => 'required',
         ];
     }
 
@@ -46,8 +46,8 @@ class EntityOne extends Model
         return EntityOneFactory::new();
     }
 
-    public function scopable_one()
+    public function scopeable_one()
     {
-        return $this->belongsTo(ScopableOne::class);
+        return $this->belongsTo(ScopeableOne::class);
     }
 }

@@ -1,13 +1,12 @@
 <?php
 
-namespace berthott\Crudable\Tests\Feature\Scopable;
+namespace berthott\Crudable\Tests\Feature\Scopeable;
 
 use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class EntityMany extends Model
 {
     use Crudable, HasFactory;
 
@@ -28,21 +27,28 @@ class User extends Authenticatable
     {
         return [
             'name' => 'required',
+            'scopeable_manies.*' => 'nullable|numeric'
         ];
     }
 
     protected static function newFactory()
     {
-        return UserFactory::new();
+        return EntityManyFactory::new();
     }
 
-    public function scopable_one()
+    /**
+     * Returns an array of foreign keys that should
+     * be attached automatically.
+     */
+    public static function attachables(): array
     {
-        return $this->belongsTo(ScopableOne::class);
+        return [
+            'scopeable_manies',
+        ];
     }
 
-    public function scopable_manies()
+    public function scopeable_manies()
     {
-        return $this->belongsToMany(ScopableMany::class);
+        return $this->belongsToMany(ScopeableMany::class);
     }
 }
