@@ -3,6 +3,7 @@
 namespace berthott\Crudable\Tests\Feature\RouteOrder;
 
 use berthott\Crudable\CrudableServiceProvider;
+use berthott\Scopeable\ScopeableServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -16,7 +17,8 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            CrudableServiceProvider::class
+            CrudableServiceProvider::class,
+            ScopeableServiceProvider::class,
         ];
     }
 

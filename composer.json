@@ -31,7 +31,17 @@
     "doctrine/dbal": "^3.3"
   },
   "require": {
+    "berthott/laravel-scopeable": "@dev",
     "haydenpierce/class-finder": "^0.4.3",
     "spatie/laravel-query-builder": "^5.0"
-  }
+  },
+  "repositories": [
+      {
+          "type": "path",
+          "url": "../../laravel_packages/laravel-scopeable",
+          "options": {
+              "symlink": true
+          }
+      }
+  ]
 }

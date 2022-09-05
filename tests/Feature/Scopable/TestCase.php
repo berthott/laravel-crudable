@@ -3,6 +3,7 @@
 namespace berthott\Crudable\Tests\Feature\Scopable;
 
 use berthott\Crudable\CrudableServiceProvider;
+use berthott\Scopeable\ScopeableServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,8 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            CrudableServiceProvider::class
+            CrudableServiceProvider::class,
+            ScopeableServiceProvider::class,
         ];
     }
 
@@ -27,6 +29,7 @@ abstract class TestCase extends BaseTestCase
     {
         $this->setUpUserTable();
         Config::set('crudable.namespace', __NAMESPACE__);
+        Config::set('scopeable.namespace', __NAMESPACE__);
     }
 
     private function setUpUserTable(): void

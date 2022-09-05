@@ -3,13 +3,13 @@
 namespace berthott\Crudable\Tests\Feature\Scopable;
 
 use berthott\Crudable\Models\Traits\Crudable;
-use berthott\Crudable\Models\Traits\Scopable;
+use berthott\Scopeable\Models\Traits\Scopeable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ScopableMany extends Model
 {
-    use Crudable, HasFactory, Scopable;
+    use Crudable, HasFactory, Scopeable;
 
     /**
      * The attributes that are mass assignable.

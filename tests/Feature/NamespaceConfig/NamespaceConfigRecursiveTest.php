@@ -3,6 +3,7 @@
 namespace berthott\Crudable\Tests\Feature\NamespaceConfig;
 
 use berthott\Crudable\CrudableServiceProvider;
+use berthott\Scopeable\ScopeableServiceProvider;
 use HaydenPierce\ClassFinder\ClassFinder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,8 @@ class NamespaceConfigRecursiveTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            CrudableServiceProvider::class
+            CrudableServiceProvider::class,
+            ScopeableServiceProvider::class,
         ];
     }
 

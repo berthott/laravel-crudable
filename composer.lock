@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f562163e86bd8d2c45fd61df54f4570",
+    "content-hash": "520871b7ca9aeb03b5a112b6b080d237",
     "packages": [
+        {
+            "name": "berthott/laravel-scopeable",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../../laravel_packages/laravel-scopeable",
+                "reference": "2da3329d65f77e5da626da9ea7b65c4972091570"
+            },
+            "require": {
+                "haydenpierce/class-finder": "^0.4.3"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.3",
+                "orchestra/testbench": "^7.0",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "berthott\\Scopeable\\ScopeableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "berthott\\Scopeable\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "berthott\\Scopeable\\Tests\\": "tests"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Bladt",
+                    "email": "berthott@web.de"
+                }
+            ],
+            "description": "Laravel helper for permission scopes",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
         {
             "name": "brick/math",
             "version": "0.9.3",
@@ -8185,10 +8234,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "berthott/laravel-scopeable": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -4,11 +4,11 @@ namespace berthott\Crudable\Http\Controllers;
 
 use berthott\Crudable\Facades\CrudQuery;
 use berthott\Crudable\Facades\CrudRelations;
-use berthott\Crudable\Facades\Scopable;
 use berthott\Crudable\Http\Requests\DeleteManyRequest;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Crudable\Models\Contracts\Targetable;
 use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
+use berthott\Scopeable\Facades\Scopeable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -27,7 +27,7 @@ class CrudController implements Targetable
      */
     public function index(): Collection
     {
-        return Scopable::filterScopes(CrudQuery::getQuery($this->target));
+        return Scopeable::filterScopes(CrudQuery::getQuery($this->target));
     }
 
     /**
@@ -35,7 +35,7 @@ class CrudController implements Targetable
      */
     public function show(mixed $id): Model
     {
-        return Scopable::checkScopes($this->target::findOrFail($id));
+        return Scopeable::checkScopes($this->target::findOrFail($id));
     }
 
     /**
@@ -45,7 +45,7 @@ class CrudController implements Targetable
     {
         $validated = $request->validated();
 
-        return Scopable::checkScopes(
+        return Scopeable::checkScopes(
             CrudRelations::attach($this->target::create($validated), $validated),
             function($instance) {
                 $instance->delete();
@@ -63,7 +63,7 @@ class CrudController implements Targetable
         $backup = $instance->fresh();
         $instance->update($validated);
 
-        return Scopable::checkScopes(
+        return Scopeable::checkScopes(
             CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated),
             function($instance) use ($backup) {
                 $instance->delete();
@@ -77,7 +77,7 @@ class CrudController implements Targetable
      */
     public function destroy(mixed $id): int
     {
-        Scopable::checkScopes($this->target::findOrFail($id));
+        Scopeable::checkScopes($this->target::findOrFail($id));
         $ret = $this->target::destroy($id);
         CrudRelations::deleteUnrelatedCreatables($this->target);
 
@@ -90,7 +90,7 @@ class CrudController implements Targetable
     public function destroy_many(DeleteManyRequest $request): int
     {
         foreach ($request->ids as $id) { 
-            Scopable::checkScopes($this->target::findOrFail($id));
+            Scopeable::checkScopes($this->target::findOrFail($id));
         }
         $ret = $this->target::destroy($request->ids);
         CrudRelations::deleteUnrelatedCreatables($this->target);
