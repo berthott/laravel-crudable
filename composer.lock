@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "520871b7ca9aeb03b5a112b6b080d237",
+    "content-hash": "ef8e971b09d9bdef9c2057dd1e54de8f",
     "packages": [
         {
             "name": "berthott/laravel-scopeable",
-            "version": "dev-master",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/berthott/laravel-scopeable.git",
+                "reference": "ea6bdac8ba65712b6c1def217d3594cb669e1648"
+            },
             "dist": {
-                "type": "path",
-                "url": "../../laravel_packages/laravel-scopeable",
-                "reference": "2da3329d65f77e5da626da9ea7b65c4972091570"
+                "type": "zip",
+                "url": "https://api.github.com/repos/berthott/laravel-scopeable/zipball/ea6bdac8ba65712b6c1def217d3594cb669e1648",
+                "reference": "ea6bdac8ba65712b6c1def217d3594cb669e1648",
+                "shasum": ""
             },
             "require": {
                 "haydenpierce/class-finder": "^0.4.3"
@@ -35,11 +41,7 @@
                     "berthott\\Scopeable\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "berthott\\Scopeable\\Tests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -50,10 +52,11 @@
                 }
             ],
             "description": "Laravel helper for permission scopes",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/berthott/laravel-scopeable/issues",
+                "source": "https://github.com/berthott/laravel-scopeable/tree/2.0.0"
+            },
+            "time": "2022-09-09T09:19:44+00:00"
         },
         {
             "name": "brick/math",
@@ -8234,9 +8237,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "berthott/laravel-scopeable": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
