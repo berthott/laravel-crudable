@@ -2,12 +2,22 @@
 
 namespace berthott\Crudable\Models\Traits;
 
+use Illuminate\Database\Schema\Grammars\MySqlGrammar;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 trait Crudable
 {
+    /**
+     * Initialize the crudable.
+     */
+    protected function initializeCrudable(): void
+    {
+        $this->fillable(array_merge(array_diff(self::getTableColumns(), ['id']), $this->fillable));
+    }
+
     /**
      * Returns an array of query builder options.
      * See https://spatie.be/docs/laravel-query-builder/v3/introduction
