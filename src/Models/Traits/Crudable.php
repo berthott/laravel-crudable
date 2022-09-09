@@ -123,10 +123,13 @@ trait Crudable
     private static function buildDbSchema(): array
     {
         return array_map(function ($column) {
-            $type = DB::getSchemaBuilder()->getColumnType(self::entityTableName(), $column);
+            $doctrineColumn = DB::getSchemaBuilder()->getConnection()->getDoctrineColumn(self::entityTableName(), $column);
             return [
                 'column' => $column,
-                'type' => $type,
+                'type' => $doctrineColumn->getType()->getName(),
+                'nullable' => !$doctrineColumn->getNotNull(),
+                'auto_increment' => $doctrineColumn->getAutoIncrement(),
+                'length' => $doctrineColumn->getLength()
             ];
         }, Schema::getColumnListing(self::entityTableName()));
     }
