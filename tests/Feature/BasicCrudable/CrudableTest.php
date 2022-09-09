@@ -2,6 +2,7 @@
 
 namespace berthott\Crudable\Tests\Feature\BasicCrudable;
 
+use berthott\Crudable\Http\Requests\UpdateRequest;
 use Illuminate\Support\Facades\Route;
 
 class CrudableTest extends TestCase
@@ -67,12 +68,32 @@ class CrudableTest extends TestCase
     {
         $this->get(route('users.schema'))
             ->assertStatus(200)
-            ->assertJsonFragment(['column' => 'id', 'type' => 'integer'])
-            ->assertJsonFragment(['column' => 'firstname', 'type' => 'string'])
-            ->assertJsonFragment(['column' => 'lastname', 'type' => 'string'])
-            ->assertJsonFragment(['column' => 'created_at', 'type' => 'datetime'])
-            ->assertJsonFragment(['column' => 'updated_at', 'type' => 'datetime'])
-            ->assertJsonFragment(['column' => 'test', 'type' => 'appends']);
+            ->assertJson([
+                // length is null due to sqlite in testing environment, would be 255 for default string columns otherwise
+                ['column' => 'id', 'type' => 'integer', 'nullable' => false, 'auto_increment' => true, 'length' => null],
+                ['column' => 'firstname', 'type' => 'string', 'nullable' => false, 'auto_increment' => false, 'length' => null],
+                ['column' => 'lastname', 'type' => 'string', 'nullable' => false, 'auto_increment' => false, 'length' => null],
+                ['column' => 'hours', 'type' => 'integer', 'nullable' => true, 'auto_increment' => false, 'length' => null],
+                ['column' => 'created_at', 'type' => 'datetime', 'nullable' => true, 'auto_increment' => false, 'length' => null],
+                ['column' => 'updated_at', 'type' => 'datetime', 'nullable' => true, 'auto_increment' => false, 'length' => null],
+                ['column' => 'test', 'type' => 'appends']
+            ]);
+    }
+
+    public function test_rules(): void
+    {
+        // faking a request
+        $this->get(route('users.index'));
+        $request = new UpdateRequest();
+        $request->initTarget();
+        $this->assertSame([
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'hours' => 'nullable|numeric',
+            'created_at' => 'nullable|date',
+            'updated_at' => 'nullable|date',
+            'id' => 'nullable|numeric',
+        ], $request->rules(null));
     }
 
     public function test_update_user(): void

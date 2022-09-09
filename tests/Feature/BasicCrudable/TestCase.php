@@ -36,6 +36,7 @@ abstract class TestCase extends BaseTestCase
             $table->bigIncrements('id');
             $table->string('firstname');
             $table->string('lastname');
+            $table->integer('hours')->nullable();
             $table->timestamps();
         });
     }

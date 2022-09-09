@@ -10,30 +10,9 @@ class User extends Model
 {
     use Crudable, HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'firstname',
-        'lastname',
-    ];
-
     protected $appends = [
         'test',
     ];
-
-    /**
-     * @param  mixed  $id
-     * @return array
-     */
-    public static function rules($id): array
-    {
-        return [
-            'firstname' => 'required',
-        ];
-    }
 
     protected static function newFactory()
     {
