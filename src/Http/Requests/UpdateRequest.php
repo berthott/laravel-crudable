@@ -26,6 +26,7 @@ class UpdateRequest extends FormRequest implements Targetable
             $this->buildAttachableRules(),  // default attachables rules
             $this->buildCreatableRules(),  // default creatables rules
             $this->buildCustomRelationRules(),  // default custom relation rules
+            $this->buildDefaultRules($this->getPrimaryId()), // default rules from schema
             $this->target::rules($this->getPrimaryId()), // target rules
         );
     }
@@ -67,6 +68,38 @@ class UpdateRequest extends FormRequest implements Targetable
         foreach (array_keys($this->target::customRelations()) as $customRelations) {
             $rules[Str::singular($customRelations)] = 'nullable';
             $rules[$customRelations] = 'array';
+        }
+
+        return $rules;
+    }
+
+    protected function buildDefaultRules($id = null): array
+    {
+        $rules = [];
+        foreach ($this->target::schema() as $column) {
+            if ($column['type'] === 'appends') {
+                continue;
+            }
+            $columnRules = [$column['nullable'] || $id || $column['auto_increment'] ? 'nullable' : 'required'];
+            switch($column['type']) {
+                case 'string':
+                case 'text': {
+                    $columnRules[] = 'string';
+                    if ($column['length']) {
+                        $columnRules[] = 'max:'.$column['length'];
+                    }
+                    break;
+                }
+                case 'integer':
+                case 'bigint':
+                case 'float': 
+                    $columnRules[] = 'numeric';
+                    break;
+                case 'datetime':
+                    $columnRules[] = 'date';
+                    break;
+            }
+            $rules[$column['column']] = join('|', $columnRules);
         }
 
         return $rules;
