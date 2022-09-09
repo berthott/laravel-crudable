@@ -131,7 +131,19 @@ trait Crudable
                 'auto_increment' => $doctrineColumn->getAutoIncrement(),
                 'length' => $doctrineColumn->getLength()
             ];
-        }, Schema::getColumnListing(self::entityTableName()));
+        }, self::getTableColumns());
+    }
+
+    private static function getTableColumns()
+    {
+        return App::runningUnitTests() 
+        ?   Schema::getColumnListing(self::entityTableName())
+        :   array_map(function($column) {
+                return $column->column_name;
+            }, DB::getSchemaBuilder()->getConnection()->select(
+                (new MySqlGrammar)->compileColumnListing().' order by ordinal_position',
+                [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
+            ));
     }
 
     /**
