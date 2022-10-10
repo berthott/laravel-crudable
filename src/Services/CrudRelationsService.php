@@ -56,7 +56,11 @@ class CrudRelationsService
                     $relation->invoke($model)->attach($relationInstance);
                 }
                 // delete unrelated
-                $creatables[$relation->name]['class']::doesntHave($model->getTable())->delete();
+                if (method_exists($creatables[$relation->name]['class'], 'deleteUnused')) {
+                    $creatables[$relation->name]['class']::deleteUnused();
+                } else {
+                    $creatables[$relation->name]['class']::doesntHave($model->getTable())->delete();
+                }
                 $model->load($relation->name);
                 $this->sendUpdateEvent($model);
             }

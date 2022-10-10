@@ -31,10 +31,28 @@ class Tag extends Model implements ContractsCrudable
     }
 
     /**
+     * Delete all unused tags.
+     */
+    static public function deleteUnused() 
+    {
+        self::doesntHave('users')
+            ->doesntHave('projects')
+            ->delete();
+    }
+
+    /**
      * The users that belong to the tag.
      */
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->morphedByMany(User::class, 'taggable');
+    }
+
+    /**
+     * The projects that belong to the tag.
+     */
+    public function projects()
+    {
+        return $this->morphedByMany(Project::class, 'taggable');
     }
 }

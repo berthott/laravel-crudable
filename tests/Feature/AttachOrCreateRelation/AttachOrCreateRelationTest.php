@@ -38,8 +38,8 @@ class AttachOrCreateRelationTest extends TestCase
         $this->assertDatabaseHas('tags', [
             'name' => $tag
         ]);
-        $this->assertDatabaseHas('tag_user', [
-            'user_id' => $id
+        $this->assertDatabaseHas('taggables', [
+            'taggable_id' => $id
         ]);
     }
 
@@ -60,8 +60,8 @@ class AttachOrCreateRelationTest extends TestCase
         $this->assertDatabaseHas('tags', [
             'name' => $tag
         ]);
-        $this->assertDatabaseHas('tag_user', [
-            'user_id' => $id
+        $this->assertDatabaseHas('taggables', [
+            'taggable_id' => $id
         ]);
     }
 
@@ -86,6 +86,31 @@ class AttachOrCreateRelationTest extends TestCase
         ]);
         $this->assertDatabaseMissing('tags', [
             'name' => $tags[1]->name,
+        ]);
+    }
+
+    public function test_update_tag_with_multiple_morph_relations(): void
+    {
+        $update = 'TestTag5000';
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $userTags = Tag::factory()->count(2)->create();
+        $projectTags = Tag::factory()->count(2)->create();
+        $user->tags()->attach($userTags);
+        $project->tags()->attach($projectTags);
+        $this->assertDatabaseCount('tags', 4);
+        $this->put(route('users.update', ['user' => $user->id]), [
+            'tags' => [$userTags[0]->name, $update]
+        ])->assertStatus(200);
+        $this->assertDatabaseCount('tags', 4);
+        $this->assertDatabaseHas('tags', [
+            'name' => $userTags[0]->name,
+        ]);
+        $this->assertDatabaseHas('tags', [
+            'name' => $update,
+        ]);
+        $this->assertDatabaseMissing('tags', [
+            'name' => $userTags[1]->name,
         ]);
     }
 

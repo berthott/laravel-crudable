@@ -38,17 +38,22 @@ abstract class TestCase extends BaseTestCase
             $table->string('name');
             $table->timestamps();
         });
+        Schema::create('projects', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
         Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
         });
-        Schema::create('tag_user', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
             $table->integer('tag_id')->unsigned();
+            $table->integer('taggable_id')->unsigned();
+            $table->string('taggable_type');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
         Schema::create('attributes', function (Blueprint $table) {

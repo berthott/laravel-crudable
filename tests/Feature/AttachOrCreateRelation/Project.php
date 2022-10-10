@@ -7,12 +7,12 @@ use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserFactory extends NameFactory
+class ProjectFactory extends NameFactory
 {
-    protected $model = User::class;
+    protected $model = Project::class;
 };
 
-class User extends Model implements ContractsCrudable
+class Project extends Model implements ContractsCrudable
 {
     use Crudable, HasFactory;
     
@@ -27,7 +27,7 @@ class User extends Model implements ContractsCrudable
 
     protected static function newFactory()
     {
-        return UserFactory::new();
+        return ProjectFactory::new();
     }
 
     /**
@@ -47,12 +47,6 @@ class User extends Model implements ContractsCrudable
                     return ['name' => $value];
                 }
             ],
-            'attributes' => [
-                'class' => Attribute::class,
-                'creationMethod' => function ($value) {
-                    return ['name' => $value];
-                }
-            ],
         ];
     }
 
@@ -62,13 +56,5 @@ class User extends Model implements ContractsCrudable
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
-    }
-
-    /**
-     * The tags that belong to the user.
-     */
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class);
     }
 }
