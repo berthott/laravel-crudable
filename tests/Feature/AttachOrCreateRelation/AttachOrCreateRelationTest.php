@@ -133,11 +133,12 @@ class AttachOrCreateRelationTest extends TestCase
 
     public function test_delete_user_and_related_tags(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->for(Method::factory())->create();
         $tags = Tag::factory()->count(2)->create();
         $user->tags()->attach($tags);
         $this->delete(route('users.destroy', ['user' => $user->id]))
             ->assertStatus(200);
+        $this->assertDatabaseCount('methods', 0);
         $this->assertDatabaseCount('tags', 0);
         $this->assertDatabaseMissing('tags', [
             'name' => $tags[0]->name,
@@ -145,5 +146,47 @@ class AttachOrCreateRelationTest extends TestCase
         $this->assertDatabaseMissing('tags', [
             'name' => $tags[1]->name,
         ]);
+    }
+
+    public function test_create_method(): void
+    {
+        $method = 'TestMethod';
+        $userToStore = User::factory()->make([
+            'method' => $method,
+        ]);
+        $id = $this->post(route('users.store'), $userToStore->toArray())
+            ->assertStatus(201)
+            ->assertJsonFragment(['name' => $method])
+            ->json()['id'];
+        $this->assertDatabaseHas('users', [
+            'id' => $id,
+            'name' => $userToStore->name
+        ]);
+        $this->assertDatabaseHas('methods', [
+            'name' => $method
+        ]);
+    }
+
+    public function test_update_method(): void
+    {
+        $update = 'TestMethod5000';
+        $user = User::factory()->for(Method::factory())->create();
+        $this->assertDatabaseCount('methods', 1);
+        $this->put(route('users.update', ['user' => $user->id]), [
+            'method' => $update
+        ])->assertStatus(200);
+        $this->assertDatabaseCount('methods', 1);
+        $this->assertDatabaseHas('methods', [
+            'name' => $update,
+        ]);
+    }
+
+    public function test_delete_method(): void
+    {
+        $user = User::factory()->for(Method::factory())->create();
+        $this->put(route('users.update', ['user' => $user->id]), [
+            'method' => null
+        ])->assertStatus(200);
+        $this->assertDatabaseCount('methods', 0);
     }
 }

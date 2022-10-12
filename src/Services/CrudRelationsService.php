@@ -45,15 +45,25 @@ class CrudRelationsService
         foreach ($this->getPossibleRelations($model, array_keys($creatables)) as $relation) {
             $key = $this->getDataKey($relation->name, $data);
             if ($key) {
-                $relation->invoke($model)->detach();
+                $isMany = Str::plural($relation->name) === $relation->name;
+                $isMany 
+                    ? $relation->invoke($model)->detach() 
+                    : $relation->invoke($model)->dissociate();
                 $relationClass = $creatables[$relation->name]['class'];
                 $creationMethod = $creatables[$relation->name]['creationMethod'];
                 if (!is_array($data[$key])) {
                     $data[$key] = [$data[$key]];
                 }
                 foreach ($data[$key] as $dataEntry) {
-                    $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
-                    $relation->invoke($model)->attach($relationInstance);
+                    if ($dataEntry) {
+                        $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
+                        $isMany 
+                            ? $relation->invoke($model)->attach($relationInstance)
+                            : $relation->invoke($model)->associate($relationInstance);
+                    }
+                }
+                if (!$isMany) {
+                    $model->save();
                 }
                 // delete unrelated
                 if (method_exists($creatables[$relation->name]['class'], 'deleteUnused')) {

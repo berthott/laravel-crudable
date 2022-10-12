@@ -53,6 +53,12 @@ class User extends Model implements ContractsCrudable
                     return ['name' => $value];
                 }
             ],
+            'method' => [
+                'class' => Method::class,
+                'creationMethod' => function ($value) {
+                    return ['name' => $value];
+                }
+            ],
         ];
     }
 
@@ -70,5 +76,13 @@ class User extends Model implements ContractsCrudable
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class);
+    }
+
+    /**
+     * The method that belong to the user.
+     */
+    public function method()
+    {
+        return $this->belongsTo(Method::class);
     }
 }

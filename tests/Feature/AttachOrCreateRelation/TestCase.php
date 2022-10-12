@@ -36,7 +36,10 @@ abstract class TestCase extends BaseTestCase
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->integer('method_id')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->foreign('method_id')->references('id')->on('methods')->onDelete('cascade');
         });
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
@@ -68,6 +71,11 @@ abstract class TestCase extends BaseTestCase
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
+        });
+        Schema::create('methods', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
         });
         // for delete cascadation, is disabled in sqlite by default
         DB::statement(DB::raw('PRAGMA foreign_keys=1'));

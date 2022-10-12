@@ -55,8 +55,13 @@ class UpdateRequest extends FormRequest implements Targetable
     {
         $rules = [];
         foreach (array_keys($this->target::creatables()) as $creatable) {
+            $isMany = Str::plural($creatable) === $creatable;
             $rules[Str::singular($creatable)] = 'nullable';
-            $rules[$creatable] = 'array';
+            if ($isMany) {
+                $rules[$creatable] = 'array';
+            } else {
+                $rules[Str::singular($creatable).'_id'] = 'nullable';
+            }
         }
 
         return $rules;
