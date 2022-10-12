@@ -23,10 +23,10 @@ class UpdateRequest extends FormRequest implements Targetable
     {
         return array_merge(
             array_fill_keys($this->getInstance()->getFillable(), 'nullable'),  // default fillable rules
+            $this->buildDefaultRules($this->getPrimaryId()), // default rules from schema
             $this->buildAttachableRules(),  // default attachables rules
             $this->buildCreatableRules(),  // default creatables rules
             $this->buildCustomRelationRules(),  // default custom relation rules
-            $this->buildDefaultRules($this->getPrimaryId()), // default rules from schema
             $this->target::rules($this->getPrimaryId()), // target rules
         );
     }
