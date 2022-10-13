@@ -101,6 +101,14 @@ trait Crudable
     }
 
     /**
+     * Returns an array of additional middleware.
+     */
+    public static function filterFromSchema(): array
+    {
+        return [];
+    }
+
+    /**
      * The single name of the model.
      */
     public static function singleName(): string
@@ -124,7 +132,10 @@ trait Crudable
         if (!Schema::hasTable(self::entityTableName())) {
             return [];
         }
-        return array_merge(self::buildDbSchema(), self::buildAppendsSchema());
+        return array_values(array_filter(
+            array_merge(self::buildDbSchema(), self::buildAppendsSchema()), 
+            fn ($entry) => !in_array($entry['column'], self::filterFromSchema()),
+        ));
     }
 
     /**

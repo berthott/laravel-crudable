@@ -23,4 +23,12 @@ class User extends Model
     {
         return 'test';
     }
+
+    /**
+     * Returns an array of additional middleware.
+     */
+    public static function filterFromSchema(): array
+    {
+        return ['hours'];
+    }
 }

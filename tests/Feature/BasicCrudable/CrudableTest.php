@@ -73,7 +73,7 @@ class CrudableTest extends TestCase
                 ['column' => 'id', 'type' => 'integer', 'nullable' => false, 'auto_increment' => true, 'length' => null],
                 ['column' => 'firstname', 'type' => 'string', 'nullable' => false, 'auto_increment' => false, 'length' => null],
                 ['column' => 'lastname', 'type' => 'string', 'nullable' => false, 'auto_increment' => false, 'length' => null],
-                ['column' => 'hours', 'type' => 'integer', 'nullable' => true, 'auto_increment' => false, 'length' => null],
+                // ['column' => 'hours', 'type' => 'integer', 'nullable' => true, 'auto_increment' => false, 'length' => null], // we filter hours with filterFromSchema
                 ['column' => 'created_at', 'type' => 'datetime', 'nullable' => true, 'auto_increment' => false, 'length' => null],
                 ['column' => 'updated_at', 'type' => 'datetime', 'nullable' => true, 'auto_increment' => false, 'length' => null],
                 ['column' => 'test', 'type' => 'appends']
@@ -89,7 +89,7 @@ class CrudableTest extends TestCase
         $this->assertSame([
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'hours' => 'nullable|numeric',
+            'hours' => 'nullable', // 'nullable|numeric', // only nullable because of filterFromSchema
             'created_at' => 'nullable|date',
             'updated_at' => 'nullable|date',
             'id' => 'nullable|numeric',
