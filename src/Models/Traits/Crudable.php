@@ -143,14 +143,19 @@ trait Crudable
      */
     private static function buildDbSchema(): array
     {
-        return array_map(function ($column) {
-            $doctrineColumn = DB::getSchemaBuilder()->getConnection()->getDoctrineColumn(self::entityTableName(), $column);
+        $table = self::entityTableName();
+        $indexes = array_keys(DB::getSchemaBuilder()->getConnection()->getDoctrineSchemaManager()->listTableIndexes($table));
+        return array_map(function ($column) use ($indexes, $table) {
+            $doctrineColumn = DB::getSchemaBuilder()->getConnection()->getDoctrineColumn($table, $column);
             return [
                 'column' => $column,
                 'type' => $doctrineColumn->getType()->getName(),
                 'nullable' => !$doctrineColumn->getNotNull(),
                 'auto_increment' => $doctrineColumn->getAutoIncrement(),
-                'length' => $doctrineColumn->getLength()
+                'length' => $doctrineColumn->getLength(),
+                'default' => $doctrineColumn->getDefault(),
+                'unique' => in_array("{$table}_{$column}_unique", $indexes),
+                'foreign' => in_array("{$table}_{$column}_foreign", $indexes),
             ];
         }, self::getTableColumns());
     }
