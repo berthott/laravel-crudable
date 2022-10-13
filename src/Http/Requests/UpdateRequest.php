@@ -86,7 +86,7 @@ class UpdateRequest extends FormRequest implements Targetable
             if ($column['type'] === 'appends') {
                 continue;
             }
-            $columnRules = [$column['nullable'] || $column['default'] || $id || $column['auto_increment'] ? 'nullable' : 'required'];
+            $columnRules = [$column['nullable'] || isset($column['default']) || $id || $column['auto_increment'] ? 'nullable' : 'required'];
             if ($column['unique']) {
                 $columnRules[] = Rule::unique($this->getTableName())->ignore($id);
             }
