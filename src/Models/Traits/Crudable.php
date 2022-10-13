@@ -101,7 +101,7 @@ trait Crudable
     }
 
     /**
-     * Returns an array of additional middleware.
+     * Returns an array of columns to be filtered from the schema.
      */
     public static function filterFromSchema(): array
     {
