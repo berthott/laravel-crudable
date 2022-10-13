@@ -9,6 +9,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest implements Targetable
 {
@@ -87,7 +88,7 @@ class UpdateRequest extends FormRequest implements Targetable
             }
             $columnRules = [$column['nullable'] || $column['default'] || $id || $column['auto_increment'] ? 'nullable' : 'required'];
             if ($column['unique']) {
-                $columnRules[] = "unique:{$this->getTableName()}";
+                $columnRules[] = Rule::unique($this->getTableName())->ignore($id);
             }
             switch($column['type']) {
                 case 'string':
@@ -107,7 +108,7 @@ class UpdateRequest extends FormRequest implements Targetable
                     $columnRules[] = 'date';
                     break;
             }
-            $rules[$column['column']] = join('|', $columnRules);
+            $rules[$column['column']] = $columnRules;
         }
 
         return $rules;
