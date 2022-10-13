@@ -85,7 +85,10 @@ class UpdateRequest extends FormRequest implements Targetable
             if ($column['type'] === 'appends') {
                 continue;
             }
-            $columnRules = [$column['nullable'] || $id || $column['auto_increment'] ? 'nullable' : 'required'];
+            $columnRules = [$column['nullable'] || $column['default'] || $id || $column['auto_increment'] ? 'nullable' : 'required'];
+            if ($column['unique']) {
+                $columnRules[] = "unique:{$this->getTableName()}";
+            }
             switch($column['type']) {
                 case 'string':
                 case 'text': {
@@ -117,6 +120,11 @@ class UpdateRequest extends FormRequest implements Targetable
         }
 
         return $this->instance;
+    }
+
+    protected function getTableName(): string
+    {
+        return $this->getInstance()->getTable($this->target);
     }
 
     protected function getSingularName(): string
