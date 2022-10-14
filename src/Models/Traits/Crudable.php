@@ -15,7 +15,7 @@ trait Crudable
      */
     protected function initializeCrudable(): void
     {
-        $this->fillable(array_merge(array_diff(self::getTableColumns(), ['id']), $this->fillable));
+        $this->fillable(array_merge(self::getTableColumns(), $this->fillable));
     }
 
     /**
