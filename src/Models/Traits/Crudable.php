@@ -38,7 +38,7 @@ trait Crudable
     }
 
     /**
-     * Register routes that should be evaluated 
+     * Register routes that should be evaluated
      * before the CRUD routes.
      */
     public static function routesBefore()
@@ -47,7 +47,7 @@ trait Crudable
     }
 
     /**
-     * Register routes that should be evaluated 
+     * Register routes that should be evaluated
      * after the CRUD routes.
      */
     public static function routesAfter()
@@ -78,7 +78,7 @@ trait Crudable
     }
 
     /**
-     * Returns an array of custom relations that 
+     * Returns an array of custom relations that
      * will be looped through.
      * 'relation' => Closure
      */
@@ -133,7 +133,7 @@ trait Crudable
             return [];
         }
         return array_values(array_filter(
-            array_merge(self::buildDbSchema(), self::buildAppendsSchema()), 
+            array_merge(self::buildDbSchema(), self::buildAppendsSchema()),
             fn ($entry) => !in_array($entry['column'], self::filterFromSchema()),
         ));
     }
@@ -162,14 +162,14 @@ trait Crudable
 
     private static function getTableColumns()
     {
-        return App::runningUnitTests() 
-        ?   Schema::getColumnListing(self::entityTableName())
-        :   array_map(function($column) {
-                return $column->column_name;
-            }, DB::getSchemaBuilder()->getConnection()->select(
-                (new MySqlGrammar)->compileColumnListing().' order by ordinal_position',
-                [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
-            ));
+        return App::runningUnitTests()
+        ? Schema::getColumnListing(self::entityTableName())
+        : array_map(function ($column) {
+            return $column->column_name;
+        }, DB::getSchemaBuilder()->getConnection()->select(
+            (new MySqlGrammar())->compileColumnListing().' order by ordinal_position',
+            [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
+        ));
     }
 
     /**
@@ -177,7 +177,6 @@ trait Crudable
      */
     private static function buildAppendsSchema(): array
     {
-
         return array_map(function ($appends) {
             return [
                 'column' => $appends,

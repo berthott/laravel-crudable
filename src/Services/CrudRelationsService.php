@@ -46,8 +46,8 @@ class CrudRelationsService
             $key = $this->getDataKey($relation->name, $data);
             if ($key) {
                 $isMany = Str::plural($relation->name) === $relation->name;
-                $isMany 
-                    ? $relation->invoke($model)->detach() 
+                $isMany
+                    ? $relation->invoke($model)->detach()
                     : $relation->invoke($model)->dissociate();
                 $relationClass = $creatables[$relation->name]['class'];
                 $creationMethod = $creatables[$relation->name]['creationMethod'];
@@ -57,7 +57,7 @@ class CrudRelationsService
                 foreach ($data[$key] as $dataEntry) {
                     if ($dataEntry) {
                         $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
-                        $isMany 
+                        $isMany
                             ? $relation->invoke($model)->attach($relationInstance)
                             : $relation->invoke($model)->associate($relationInstance);
                     }
@@ -67,7 +67,7 @@ class CrudRelationsService
                 }
                 // delete unrelated
                 if (method_exists($creatables[$relation->name]['class'], 'deleteUnused')) {
-                    $creatables[$relation->name]['class']::deleteUnused();
+                    $creatables[$relation->name]['class']::deleteUnused($model);
                 } else {
                     $creatables[$relation->name]['class']::doesntHave($model->getTable())->delete();
                 }
@@ -142,7 +142,7 @@ class CrudRelationsService
         $singleName = Str::singular($relationName);
         if (array_key_exists($relationName, $data)) {
             return $relationName;
-        } else if (array_key_exists($singleName, $data)) {
+        } elseif (array_key_exists($singleName, $data)) {
             return $singleName;
         } else {
             return null;

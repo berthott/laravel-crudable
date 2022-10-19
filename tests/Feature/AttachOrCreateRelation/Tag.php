@@ -14,8 +14,9 @@ class TagFactory extends NameFactory
 
 class Tag extends Model implements ContractsCrudable
 {
-    use Crudable, HasFactory;
-    
+    use Crudable;
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -33,7 +34,7 @@ class Tag extends Model implements ContractsCrudable
     /**
      * Delete all unused tags.
      */
-    static public function deleteUnused() 
+    public static function deleteUnused($tag)
     {
         self::doesntHave('users')
             ->doesntHave('projects')
