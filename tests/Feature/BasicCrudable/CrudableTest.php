@@ -87,12 +87,12 @@ class CrudableTest extends TestCase
         $request = new UpdateRequest();
         $request->initTarget();
         $this->assertSame([
-            'firstname' => 'required|string',
-            'lastname' => 'required|string',
+            'firstname' => ['required', 'string'],
+            'lastname' => ['required', 'string'],
             'hours' => 'nullable', // 'nullable|numeric', // only nullable because of filterFromSchema
-            'created_at' => 'nullable|date',
-            'updated_at' => 'nullable|date',
-            'id' => 'nullable|numeric',
+            'created_at' => ['nullable', 'date'],
+            'updated_at' => ['nullable', 'date'],
+            'id' => ['nullable', 'numeric'],
         ], $request->rules(null));
     }
 
