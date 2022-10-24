@@ -35,7 +35,7 @@ class CrudController implements Targetable
      */
     public function show(mixed $id): Model
     {
-        return Scopeable::checkScopes($this->target::findOrFail($id));
+        return Scopeable::checkScopes($this->target::findOrFail($id)->load($this->target::showRelations()));
     }
 
     /**
@@ -47,7 +47,7 @@ class CrudController implements Targetable
 
         return Scopeable::checkScopes(
             CrudRelations::attach($this->target::create($validated), $validated),
-            function($instance) {
+            function ($instance) {
                 $instance->delete();
             }
         );
@@ -65,7 +65,7 @@ class CrudController implements Targetable
 
         return Scopeable::checkScopes(
             CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated),
-            function($instance) use ($backup) {
+            function ($instance) use ($backup) {
                 $instance->delete();
                 $backup->save();
             }
@@ -89,7 +89,7 @@ class CrudController implements Targetable
      */
     public function destroy_many(DeleteManyRequest $request): int
     {
-        foreach ($request->ids as $id) { 
+        foreach ($request->ids as $id) {
             Scopeable::checkScopes($this->target::findOrFail($id));
         }
         $ret = $this->target::destroy($request->ids);

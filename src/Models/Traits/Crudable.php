@@ -109,6 +109,14 @@ trait Crudable
     }
 
     /**
+     * Returns an array of relations to add to the show route.
+     */
+    public static function showRelations(): array
+    {
+        return [];
+    }
+
+    /**
      * The single name of the model.
      */
     public static function singleName(): string
