@@ -42,14 +42,6 @@ class Role extends Model implements ContractsCrudable
     }
 
     /**
-     * Returns an array of relations to add to the show route.
-     */
-    public static function showRelations(): array
-    {
-        return [];
-    }
-
-    /**
      * The tags that belong to the role.
      */
     public function tags()
