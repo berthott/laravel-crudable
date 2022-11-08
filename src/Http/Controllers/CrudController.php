@@ -46,7 +46,7 @@ class CrudController implements Targetable
         $validated = $request->validated();
 
         return Scopeable::checkScopes(
-            CrudRelations::attach($this->target::create($validated), $validated),
+            CrudRelations::attach($this->target::create($validated), $validated)->load($this->target::showRelations()),
             function ($instance) {
                 $instance->delete();
             }
@@ -64,7 +64,7 @@ class CrudController implements Targetable
         $instance->update($validated);
 
         return Scopeable::checkScopes(
-            CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated),
+            CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated)->load($this->target::showRelations()),
             function ($instance) use ($backup) {
                 $instance->delete();
                 $backup->save();
