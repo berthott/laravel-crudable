@@ -53,6 +53,6 @@ abstract class TestCase extends BaseTestCase
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
         // for delete cascadation, is disabled in sqlite by default
-        DB::statement(DB::raw('PRAGMA foreign_keys=1'));
+        DB::statement(DB::raw('PRAGMA foreign_keys=1')->getValue(DB::connection()->getQueryGrammar()));
     }
 }

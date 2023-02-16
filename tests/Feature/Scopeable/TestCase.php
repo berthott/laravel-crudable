@@ -85,6 +85,6 @@ abstract class TestCase extends BaseTestCase
         });
 
         // for delete cascadation, is disabled in sqlite by default
-        DB::statement(DB::raw('PRAGMA foreign_keys=1'));
+        DB::statement(DB::raw('PRAGMA foreign_keys=1')->getValue(DB::connection()->getQueryGrammar()));
     }
 }
