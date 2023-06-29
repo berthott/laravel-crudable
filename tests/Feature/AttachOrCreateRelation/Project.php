@@ -2,7 +2,6 @@
 
 namespace berthott\Crudable\Tests\Feature\AttachOrCreateRelation;
 
-use berthott\Crudable\Models\Contracts\Crudable as ContractsCrudable;
 use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +11,7 @@ class ProjectFactory extends NameFactory
     protected $model = Project::class;
 };
 
-class Project extends Model implements ContractsCrudable
+class Project extends Model
 {
     use Crudable, HasFactory;
     

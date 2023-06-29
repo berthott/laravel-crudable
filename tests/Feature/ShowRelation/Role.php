@@ -2,7 +2,6 @@
 
 namespace berthott\Crudable\Tests\Feature\ShowRelation;
 
-use berthott\Crudable\Models\Contracts\Crudable as ContractsCrudable;
 use berthott\Crudable\Models\Traits\Crudable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +10,7 @@ class RoleFactory extends NameFactory
 {
     protected $model = Role::class;
 };
-class Role extends Model implements ContractsCrudable
+class Role extends Model
 {
     use Crudable;
     use HasFactory;
