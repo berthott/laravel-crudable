@@ -3,7 +3,7 @@
 namespace berthott\Crudable\Http\Requests;
 
 use berthott\Crudable\Exceptions\ValidationException;
-use berthott\Crudable\Facades\Crudable;
+use Facades\berthott\Crudable\Services\CrudableService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class DeleteManyRequest extends FormRequest
 
     public function __construct()
     {
-        $this->target = Crudable::getTarget();
+        $this->target = CrudableService::getTarget();
     }
 
     /**

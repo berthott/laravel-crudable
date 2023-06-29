@@ -54,7 +54,8 @@ class CrudRelationsService
                 if (!is_array($data[$key])) {
                     $data[$key] = [$data[$key]];
                 }
-                foreach ($data[$key] as $dataEntry) {
+                foreach ($data[$key] 
+                as $dataEntry) {
                     if ($dataEntry) {
                         $relationInstance = $relationClass::firstOrCreate($creationMethod($dataEntry));
                         $isMany

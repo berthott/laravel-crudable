@@ -3,7 +3,7 @@
 namespace berthott\Crudable\Http\Requests;
 
 use berthott\Crudable\Exceptions\ValidationException;
-use berthott\Crudable\Facades\Crudable;
+use Facades\berthott\Crudable\Services\CrudableService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
 
     public function __construct()
     {
-        $this->target = Crudable::getTarget();
+        $this->target = CrudableService::getTarget();
     }
 
     /**

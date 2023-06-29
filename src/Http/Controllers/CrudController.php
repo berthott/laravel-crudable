@@ -2,12 +2,12 @@
 
 namespace berthott\Crudable\Http\Controllers;
 
-use berthott\Crudable\Facades\Crudable;
-use berthott\Crudable\Facades\CrudQuery;
-use berthott\Crudable\Facades\CrudRelations;
 use berthott\Crudable\Http\Requests\DeleteManyRequest;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Scopeable\Facades\Scopeable;
+use Facades\berthott\Crudable\Services\CrudableService;
+use Facades\berthott\Crudable\Services\CrudRelationsService;
+use Facades\berthott\Crudable\Services\CrudQueryService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -24,7 +24,7 @@ class CrudController
 
     public function __construct()
     {
-        $this->target = Crudable::getTarget();
+        $this->target = CrudableService::getTarget();
     }
 
     /**
@@ -32,7 +32,7 @@ class CrudController
      */
     public function index(): Collection
     {
-        return Scopeable::filterScopes(CrudQuery::getQuery($this->target));
+        return Scopeable::filterScopes(CrudQueryService::getQuery($this->target));
     }
 
     /**
@@ -51,7 +51,7 @@ class CrudController
         $validated = $request->validated();
 
         return Scopeable::checkScopes(
-            CrudRelations::attach($this->target::create($validated), $validated)->load($this->target::showRelations()),
+            CrudRelationsService::attach($this->target::create($validated), $validated)->load($this->target::showRelations()),
             function ($instance) {
                 $instance->delete();
             }
@@ -69,7 +69,7 @@ class CrudController
         $instance->update($validated);
 
         return Scopeable::checkScopes(
-            CrudRelations::attach(CrudRelations::attach($instance, $validated), $validated)->load($this->target::showRelations()),
+            CrudRelationsService::attach(CrudRelationsService::attach($instance, $validated), $validated)->load($this->target::showRelations()),
             function ($instance) use ($backup) {
                 $instance->delete();
                 $backup->save();
@@ -84,7 +84,7 @@ class CrudController
     {
         Scopeable::checkScopes($this->target::findOrFail($id));
         $ret = $this->target::destroy($id);
-        CrudRelations::deleteUnrelatedCreatables($this->target);
+        CrudRelationsService::deleteUnrelatedCreatables($this->target);
 
         return $ret;
     }
@@ -98,7 +98,7 @@ class CrudController
             Scopeable::checkScopes($this->target::findOrFail($id));
         }
         $ret = $this->target::destroy($request->ids);
-        CrudRelations::deleteUnrelatedCreatables($this->target);
+        CrudRelationsService::deleteUnrelatedCreatables($this->target);
 
         return $ret;
     }
