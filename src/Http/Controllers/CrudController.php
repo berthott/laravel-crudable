@@ -14,6 +14,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
+/**
+ * Crudable API endpoint implementation.
+ */
 class CrudController
 {
     use AuthorizesRequests;
@@ -29,6 +32,8 @@ class CrudController
 
     /**
      * Display a listing of the resource.
+     * 
+     * @api
      */
     public function index(): Collection
     {
@@ -37,6 +42,8 @@ class CrudController
 
     /**
      * Display the specified resource.
+     * 
+     * @api
      */
     public function show(mixed $id): Model
     {
@@ -45,6 +52,8 @@ class CrudController
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @api
      */
     public function store(UpdateRequest $request): Model
     {
@@ -60,6 +69,8 @@ class CrudController
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @api
      */
     public function update(UpdateRequest $request, mixed $id): Model
     {
@@ -79,6 +90,8 @@ class CrudController
 
     /**
      * Remove the specified resource from storage.
+     * 
+     * @api
      */
     public function destroy(mixed $id): int
     {
@@ -90,7 +103,9 @@ class CrudController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resources from storage.
+     * 
+     * @api
      */
     public function destroy_many(DeleteManyRequest $request): int
     {
@@ -105,6 +120,8 @@ class CrudController
 
     /**
      * Display the schema data.
+     * 
+     * @api
      */
     public function schema(): array
     {

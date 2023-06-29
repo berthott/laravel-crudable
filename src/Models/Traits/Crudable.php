@@ -8,10 +8,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
+/**
+ * Trait to add the crudable functionality.
+ */
 trait Crudable
 {
     /**
      * Initialize the crudable.
+     * 
+     * Autoset the fillable array.
      */
     protected function initializeCrudable(): void
     {
@@ -19,18 +24,15 @@ trait Crudable
     }
 
     /**
-     * Returns an array of query builder options.
-     * See https://spatie.be/docs/laravel-query-builder/v3/introduction
-     * Options are: filter, sort, include, fields, append.
-     */
-    public static function queryBuilderOptions(): array
-    {
-        return [];
-    }
-
-    /**
      * Returns an array of route options.
-     * See Route::apiResource documentation.
+     * 
+     * **optional**
+     * 
+     * Defaults to `[]`.
+     * 
+     * @link https://laravel.com/docs/10.x/controllers#api-resource-routes Route::apiResource
+     * @see \berthott\SX\SxServiceProvider::$routes
+     * @api
      */
     public static function routeOptions(): array
     {
@@ -38,8 +40,39 @@ trait Crudable
     }
 
     /**
-     * Register routes that should be evaluated
-     * before the CRUD routes.
+     * Returns an array of query builder options.
+     * 
+     * **optional**
+     * 
+     * Possible options are: filter, sort, include, fields, append.
+     * 
+     * The array might look like this:
+     * 
+     * ```php
+     * [
+     *      'filter' => ['id', 'name'],
+     *      'sort' => ['name'],
+     * ]
+     * ```
+     * 
+     * Defaults to `[]`.
+     * 
+     * @link https://spatie.be/docs/laravel-query-builder/v3/introduction
+     * @api
+     */
+    public static function queryBuilderOptions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Register routes that should be evaluated before the CRUD routes.
+     * 
+     * **optional**
+     * 
+     * {@see \berthott\Crudable\Models\Traits\Crudable::middleware()} won't be applied.
+     * 
+     * @api
      */
     public static function routesBefore()
     {
@@ -47,8 +80,13 @@ trait Crudable
     }
 
     /**
-     * Register routes that should be evaluated
-     * after the CRUD routes.
+     * Register routes that should be evaluated after the CRUD routes.
+     * 
+     * **optional**
+     * 
+     * {@see \berthott\Crudable\Models\Traits\Crudable::middleware()} won't be applied.
+     * 
+     * @api
      */
     public static function routesAfter()
     {
@@ -56,8 +94,15 @@ trait Crudable
     }
 
     /**
-     * Returns an array of relations that should
-     * be attached automatically.
+     * Returns an array of relations that should be attached automatically.
+     * 
+     * **optional**
+     * 
+     * The array should contain the relation method names that exist on the model.
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function attachables(): array
     {
@@ -65,12 +110,21 @@ trait Crudable
     }
 
     /**
-     * Returns an array of relations that should
-     * be attached or created automatically.
+     * Returns an array of relations that should be attached or created automatically.
+     * 
+     * **optional**
+     * 
+     * The array may look like this:
+     * ```php
      * 'relationMethod' => [
      *      'class' => Relation::class,
      *      'creationMethod' => Closure,
-     * ].
+     * ]
+     * ```
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function creatables(): array
     {
@@ -78,9 +132,16 @@ trait Crudable
     }
 
     /**
-     * Returns an array of custom relations that
-     * will be looped through.
-     * 'relation' => Closure
+     * Returns an array of custom relations that will be looped through.
+     * 
+     * **optional**
+     * 
+     * The array should be a associative with the relation method names as keys
+     * and a Closure as value.
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function customRelations(): array
     {
@@ -88,13 +149,30 @@ trait Crudable
     }
 
     /**
-     * Returns an array of additional middleware.
+     * Returns an array of additional middlewares.
+     * 
+     * Middleware will be applied to all routes except {@see \berthott\Crudable\Models\Traits\Crudable::routesBefore()} 
+     * and {@see \berthott\Crudable\Models\Traits\Crudable::routesAfter()} in addition to the
+     * *crudable.middleware* configured middlewares.
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function middleware(): array
     {
         return [];
     }
 
+    /**
+     * The validation rules that should be applied to store and update requests.
+     * 
+     * **optional**
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
+     */
     public static function rules(mixed $id): array
     {
         return [];
@@ -102,6 +180,12 @@ trait Crudable
 
     /**
      * Returns an array of columns to be filtered from the schema.
+     * 
+     * **optional**
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function filterFromSchema(): array
     {
@@ -110,6 +194,12 @@ trait Crudable
 
     /**
      * Returns an array of relations to add to the show route.
+     * 
+     * **optional**
+     * 
+     * Defaults to `[]`.
+     * 
+     * @api
      */
     public static function showRelations(): array
     {
@@ -168,20 +258,25 @@ trait Crudable
         }, self::getTableColumns());
     }
 
-    private static function getTableColumns()
+    /**
+     * Return the table columns.
+     * 
+     * If running in a unit test the columns will be returned by Laravels Schema facade.
+     */
+    private static function getTableColumns(): array
     {
         return App::runningUnitTests()
-        ? Schema::getColumnListing(self::entityTableName())
-        : array_map(function ($column) {
-            return $column->column_name;
-        }, DB::getSchemaBuilder()->getConnection()->select(
-            (new MySqlGrammar())->compileColumnListing().' order by ordinal_position',
-            [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
-        ));
+            ? Schema::getColumnListing(self::entityTableName())
+            : array_map(function ($column) {
+                    return $column->column_name;
+                }, DB::getSchemaBuilder()->getConnection()->select(
+                    (new MySqlGrammar())->compileColumnListing().' order by ordinal_position',
+                    [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
+                ));
     }
 
     /**
-     * Builds the schema of the current entity.
+     * Builds the schema for the appended columns.
      */
     private static function buildAppendsSchema(): array
     {

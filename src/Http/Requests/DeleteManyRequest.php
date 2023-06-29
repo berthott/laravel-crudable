@@ -18,6 +18,8 @@ class DeleteManyRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     * 
+     * @api
      */
     public function rules(): array
     {

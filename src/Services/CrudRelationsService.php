@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
+/**
+ * Service to add relation functionality
+ */
 class CrudRelationsService
 {
     /**
-     * Attach an existing relation for the model.
+     * Attach relations to the model.
      */
     public function attach(Model $model, array $data): Model
     {
@@ -19,9 +22,9 @@ class CrudRelationsService
     }
 
     /**
-     * Attach an existing relation for the model.
+     * Attach existing relations to the model.
      */
-    public function attachExisting(Model $model, array $data): Model
+    private function attachExisting(Model $model, array $data): Model
     {
         foreach ($this->getPossibleRelations($model, $model->attachables()) as $relation) {
             $key = $this->getDataKey($relation->name, $data);
@@ -37,9 +40,9 @@ class CrudRelationsService
     }
 
     /**
-     * Attach or create the relations for the model.
+     * Attach or create the relations to the model.
      */
-    public function attachOrCreate(Model $model, array $data): Model
+    private function attachOrCreate(Model $model, array $data): Model
     {
         $creatables = $model->creatables();
         foreach ($this->getPossibleRelations($model, array_keys($creatables)) as $relation) {
@@ -83,7 +86,7 @@ class CrudRelationsService
     /**
      * Loop through the custom relations of the model.
      */
-    public function loopThroughCustomRelations(Model $model, array $data): Model
+    private function loopThroughCustomRelations(Model $model, array $data): Model
     {
         $customRelations = $model->customRelations();
         foreach ($this->getPossibleRelations($model, array_keys($customRelations)) as $relation) {
@@ -99,7 +102,7 @@ class CrudRelationsService
     }
 
     /**
-     * Attach or create the relations for the model.
+     * Delete unrelated creatables.
      */
     public function deleteUnrelatedCreatables(string $class): void
     {

@@ -10,6 +10,22 @@ use Illuminate\Support\ServiceProvider;
 class CrudableServiceProvider extends ServiceProvider
 {
     /**
+     * Possible routes.
+     * 
+     * @var string[]
+     * @api
+     */
+    private $routes = [
+        'index', 
+        'show', 
+        'store', 
+        'update', 
+        'destroy', 
+        'schema', 
+        'destroy_many',
+    ];
+
+    /**
      * Register services.
      */
     public function register(): void
@@ -30,7 +46,7 @@ class CrudableServiceProvider extends ServiceProvider
         ], 'config');
 
         // add routes
-        foreach (Crudable::getTargetableClasses() as $crudable) {
+        foreach (CrudableService::getTargetableClasses() as $crudable) {
             Route::group($this->routeConfiguration(), function () use ($crudable) {
                 $crudable::routesBefore();
                 Route::group(['middleware' => $crudable::middleware()], function () use ($crudable) {
@@ -62,7 +78,7 @@ class CrudableServiceProvider extends ServiceProvider
      */
     protected function getCrudRoutes(array $options): array
     {
-        $methods = ['index', 'show', 'store', 'update', 'destroy', 'schema', 'destroy_many'];
+        $methods = $this->routes;
 
         if (isset($options['only'])) {
             $methods = array_intersect($methods, (array) $options['only']);

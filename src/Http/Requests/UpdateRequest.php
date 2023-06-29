@@ -23,6 +23,19 @@ class UpdateRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     * 
+     * * appended fields won't have any rules and will be excluded from the request
+     * * nullable and auto_increment columns are nullable
+     * * all other columns are required for storing, and nullable for updating
+     * * unique columns need to be unique
+     * * string and text columns will have a max length validation according to their length
+     * * integer, bigint and float columns need to be numeric
+     * * datetime column need to contain a date
+     * * attachables need to be an integer id or array of ids that exist on the related table
+     * * creatables can be any data and nullable
+     * * custom relations can be any data and nullable
+     * 
+     * @api
      */
     public function rules(): array
     {
@@ -44,6 +57,11 @@ class UpdateRequest extends FormRequest
         throw (new ValidationException($this->validator->errors()->messages()));
     }
 
+    /**
+     * Build the attachable rules.
+     * 
+     * An attachable needs to be an integer id or array of ids that exist on the related table.
+     */
     protected function buildAttachableRules(): array
     {
         $rules = [];
@@ -56,6 +74,11 @@ class UpdateRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Build the creatable rules.
+     * 
+     * Creatables can be any data and nullable.
+     */
     protected function buildCreatableRules(): array
     {
         $rules = [];
@@ -72,6 +95,11 @@ class UpdateRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Build custom relation rules.
+     * 
+     * Custom relations can be any data and nullable.
+     */
     protected function buildCustomRelationRules(): array
     {
         $rules = [];
@@ -83,6 +111,17 @@ class UpdateRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Build the default rules.
+     * 
+     * * appended fields won't have any rules and will be excluded from the request
+     * * nullable and auto_increment columns are nullable
+     * * all other columns are required for storing, and nullable for updating
+     * * unique columns need to be unique
+     * * string and text columns will have a max length validation according to their length
+     * * integer, bigint and float columns need to be numeric
+     * * datetime column need to contain a date
+     */
     protected function buildDefaultRules($id = null): array
     {
         $rules = [];
@@ -118,6 +157,9 @@ class UpdateRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Get the singleton.
+     */
     protected function getInstance(): Model
     {
         if (!isset($this->instance)) {
@@ -127,21 +169,33 @@ class UpdateRequest extends FormRequest
         return $this->instance;
     }
 
+    /**
+     * The entity table name of the model.
+     */
     protected function getTableName(): string
     {
         return $this->getInstance()->getTable($this->target);
     }
 
+    /**
+     * The single name of the model.
+     */
     protected function getSingularName(): string
     {
         return Str::singular($this->getInstance()->getTable($this->target));
     }
 
+    /**
+     * Is the current request an update request
+     */
     protected function isUpdate(): bool
     {
         return !empty($this->route($this->getSingularName()));
     }
 
+    /**
+     * Get the primary ID string.
+     */
     protected function getPrimaryId(): mixed
     {
         return $this->isUpdate() ? $this->route($this->getSingularName()) : null;
