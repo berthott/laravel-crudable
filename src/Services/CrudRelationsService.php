@@ -106,7 +106,11 @@ class CrudRelationsService
         $creatables = $class::creatables();
         $instance = new $class();
         foreach ($this->getPossibleRelations($class, array_keys($creatables)) as $relation) {
-            $creatables[$relation->name]['class']::doesntHave($instance->getTable())->delete();
+            if (method_exists($creatables[$relation->name]['class'], 'deleteUnused')) {
+                $creatables[$relation->name]['class']::deleteUnused($class);
+            } else {
+                $creatables[$relation->name]['class']::doesntHave($instance->getTable())->delete();
+            }
             $this->sendUpdateEvent($instance);
         }
     }

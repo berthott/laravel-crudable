@@ -148,6 +148,27 @@ class AttachOrCreateRelationTest extends TestCase
         ]);
     }
 
+    public function test_delete_user_with_tag_with_multiple_morph_relations(): void
+    {
+        $update = 'TestTag5000';
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $userTags = Tag::factory()->count(2)->create();
+        $projectTags = Tag::factory()->count(2)->create();
+        $user->tags()->attach($userTags);
+        $project->tags()->attach($projectTags);
+        $this->assertDatabaseCount('tags', 4);
+        $this->delete(route('users.destroy', ['user' => $user->id]))
+            ->assertStatus(200);
+        $this->assertDatabaseCount('tags', 2);
+        $this->assertDatabaseHas('tags', [
+            'name' => $projectTags[0]->name,
+        ]);
+        $this->assertDatabaseMissing('tags', [
+            'name' => $userTags[0]->name,
+        ]);
+    }
+
     public function test_create_method(): void
     {
         $method = 'TestMethod';
