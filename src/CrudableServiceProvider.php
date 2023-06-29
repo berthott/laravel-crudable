@@ -50,7 +50,7 @@ class CrudableServiceProvider extends ServiceProvider
         ], 'config');
 
         // add routes
-        foreach (Crudable::getCrudableClasses() as $crudable) {
+        foreach (Crudable::getTargetableClasses() as $crudable) {
             Route::group($this->routeConfiguration(), function () use ($crudable) {
                 $crudable::routesBefore();
                 Route::group(['middleware' => $crudable::middleware()], function () use ($crudable) {
