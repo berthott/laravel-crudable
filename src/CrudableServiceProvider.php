@@ -32,11 +32,6 @@ class CrudableServiceProvider extends ServiceProvider
         // add config
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'crudable');
         $this->mergeConfigFrom(__DIR__.'/../config/query-builder.php', 'query-builder');
-
-        // init targetables
-        $this->app->afterResolving(Targetable::class, function (Targetable $targetable) {
-            $targetable->initTarget();
-        });
     }
 
     /**

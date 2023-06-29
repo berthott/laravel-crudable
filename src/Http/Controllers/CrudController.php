@@ -2,12 +2,11 @@
 
 namespace berthott\Crudable\Http\Controllers;
 
+use berthott\Crudable\Facades\Crudable;
 use berthott\Crudable\Facades\CrudQuery;
 use berthott\Crudable\Facades\CrudRelations;
 use berthott\Crudable\Http\Requests\DeleteManyRequest;
 use berthott\Crudable\Http\Requests\UpdateRequest;
-use berthott\Crudable\Models\Contracts\Targetable;
-use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
 use berthott\Scopeable\Facades\Scopeable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -15,12 +14,18 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class CrudController implements Targetable
+class CrudController
 {
-    use TraitsTargetable;
     use AuthorizesRequests;
     use DispatchesJobs;
     use ValidatesRequests;
+
+    private string $target;
+
+    public function __construct()
+    {
+        $this->target = Crudable::getTarget();
+    }
 
     /**
      * Display a listing of the resource.

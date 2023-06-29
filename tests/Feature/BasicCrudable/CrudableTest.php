@@ -85,7 +85,6 @@ class CrudableTest extends TestCase
         // faking a request
         $this->get(route('users.index'));
         $request = new UpdateRequest();
-        $request->initTarget();
         $this->assertSame([
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],

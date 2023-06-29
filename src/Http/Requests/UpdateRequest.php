@@ -3,19 +3,23 @@
 namespace berthott\Crudable\Http\Requests;
 
 use berthott\Crudable\Exceptions\ValidationException;
-use berthott\Crudable\Models\Contracts\Targetable;
-use berthott\Crudable\Models\Traits\Targetable as TraitsTargetable;
+use berthott\Crudable\Facades\Crudable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class UpdateRequest extends FormRequest implements Targetable
+class UpdateRequest extends FormRequest
 {
-    use TraitsTargetable;
-
     private Model $instance;
+
+    private string $target;
+
+    public function __construct()
+    {
+        $this->target = Crudable::getTarget();
+    }
 
     /**
      * Get the validation rules that apply to the request.
