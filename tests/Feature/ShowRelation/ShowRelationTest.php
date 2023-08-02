@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\Route;
 
 class ShowRelationTest extends TestCase
 {
+    public function test_relations_missing(): void
+    {
+        $tags = Tag::factory()->count(2)->create();
+        $this->assertModelExists($tags[0]);
+        $user = User::factory()->create();
+        $user->tags()->attach($tags);
+        $this->assertModelExists($user);
+        $this->assertDatabaseHas('tag_user', [
+            'tag_id' => $tags[0]->id,
+            'user_id' => $user->id,
+        ]);
+        $this->get(route('users.index'))
+        ->assertStatus(200)
+        ->assertJsonPath('0.name', $user->name)
+        ->assertJsonMissingPath('0.tags')
+        ->assertJsonMissingPath('0.hello');
+    }
+
     public function test_show_relations_succuss(): void
     {
         $tags = Tag::factory()->count(2)->create();
@@ -17,9 +35,12 @@ class ShowRelationTest extends TestCase
             'tag_id' => $tags[0]->id,
             'user_id' => $user->id,
         ]);
-        $this->get(route('users.show', ['user' => $user->id]))
+        $json = $this->get(route('users.show', ['user' => $user->id]))
         ->assertStatus(200)
-        ->assertJsonCount(2, 'tags');
+        ->assertJsonCount(2, 'tags')
+        ->assertJsonPath('hello', 'world')
+        ->json();
+        $a =0;
     }
 
     public function test_show_relations_fail(): void

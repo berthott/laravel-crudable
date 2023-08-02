@@ -24,6 +24,14 @@ class User extends Model
         'name',
     ];
 
+    protected $appends = [
+        'hello',
+    ];
+
+    protected $hidden = [
+        'hello',
+    ];
+
     protected static function newFactory()
     {
         return UserFactory::new();
@@ -45,7 +53,7 @@ class User extends Model
      */
     public static function showRelations(): array
     {
-        return ['tags'];
+        return ['tags', 'hello'];
     }
 
     /**
@@ -54,5 +62,10 @@ class User extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function getHelloAttribute()
+    {
+        return 'world';
     }
 }

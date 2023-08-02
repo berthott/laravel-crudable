@@ -6,6 +6,7 @@ use berthott\Crudable\Http\Requests\DeleteManyRequest;
 use berthott\Crudable\Http\Requests\UpdateRequest;
 use berthott\Scopeable\Facades\Scopeable;
 use Facades\berthott\Crudable\Services\CrudableService;
+use Facades\berthott\Crudable\Services\CrudAttributesService;
 use Facades\berthott\Crudable\Services\CrudRelationsService;
 use Facades\berthott\Crudable\Services\CrudQueryService;
 use Illuminate\Database\Eloquent\Collection;
@@ -47,7 +48,7 @@ class CrudController
      */
     public function show(mixed $id): Model
     {
-        return Scopeable::checkScopes($this->target::findOrFail($id)->load($this->target::showRelations()));
+        return Scopeable::checkScopes(CrudAttributesService::get($this->target::findOrFail($id)));
     }
 
     /**
@@ -60,7 +61,7 @@ class CrudController
         $validated = $request->validated();
 
         return Scopeable::checkScopes(
-            CrudRelationsService::attach($this->target::create($validated), $validated)->load($this->target::showRelations()),
+            CrudAttributesService::get(CrudRelationsService::attach($this->target::create($validated), $validated)),
             function ($instance) {
                 $instance->delete();
             }
@@ -80,7 +81,7 @@ class CrudController
         $instance->update($validated);
 
         return Scopeable::checkScopes(
-            CrudRelationsService::attach(CrudRelationsService::attach($instance, $validated), $validated)->load($this->target::showRelations()),
+            CrudAttributesService::get(CrudRelationsService::attach($instance, $validated)),
             function ($instance) use ($backup) {
                 $instance->delete();
                 $backup->save();
