@@ -14,6 +14,11 @@ use Illuminate\Support\Str;
 trait Crudable
 {
     /**
+     * @var array(string) $tableColumns cache the table columns
+     */
+    private static array $tableColumns;
+
+    /**
      * Initialize the crudable.
      * 
      * Autoset the fillable array.
@@ -265,14 +270,17 @@ trait Crudable
      */
     private static function getTableColumns(): array
     {
-        return App::runningUnitTests()
-            ? Schema::getColumnListing(self::entityTableName())
-            : array_map(function ($column) {
-                    return $column->column_name;
-                }, DB::getSchemaBuilder()->getConnection()->select(
-                    (new MySqlGrammar())->compileColumnListing().' order by ordinal_position',
-                    [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
-                ));
+        if (!isset(static::$tableColumns)) {
+            static::$tableColumns = App::runningUnitTests()
+                ? Schema::getColumnListing(self::entityTableName())
+                : array_map(function ($column) {
+                        return $column->column_name;
+                    }, DB::getSchemaBuilder()->getConnection()->select(
+                        (new MySqlGrammar())->compileColumnListing().' order by ordinal_position',
+                        [DB::getSchemaBuilder()->getConnection()->getDatabaseName(), self::entityTableName()]
+                    ));
+        }
+        return static::$tableColumns;
     }
 
     /**
