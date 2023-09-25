@@ -17,7 +17,7 @@ class CrudAttributesService
         $relations = [];
         $attributes = [];
         foreach($model->showRelations() as $show) {
-            if (method_exists($model, $show)) {
+            if (method_exists($model, explode('.', $show)[0])) {
                 $relations[] = $show;
             } else if ($model->$show) {
                 $attributes[] = $show;
