@@ -16,7 +16,7 @@ trait Crudable
     /**
      * @var array(string) $tableColumns cache the table columns
      */
-    private static array $tableColumns;
+    private static array|null $tableColumns = null;
 
     /**
      * Initialize the crudable.
@@ -281,6 +281,17 @@ trait Crudable
                     ));
         }
         return static::$tableColumns;
+    }
+
+    /**
+     * Reset table columns.
+     * 
+     * This might be necessary if the table is altered after initialization (likely only relevant in unit test).
+     * @api
+     */
+    public static function resetTableColumns()
+    {
+        static::$tableColumns = null;
     }
 
     /**
