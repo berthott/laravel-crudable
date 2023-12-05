@@ -10,6 +10,18 @@ Easily add a complete CRUD route + controller by adding a trait to your model.
 $ composer require berthott/laravel-crudable
 ```
 
+## Concept
+
+The package implements a generic approach onto CRUD routes moving the setup of those routes from the several different places (routes / controller) into the model itself. This does'nt prevent you from adding your own custom routes and controllers. There are helper methods if you need the additionally created route in a specific order.
+
+### Frontend connection
+
+The index route does not implement any pagination. This is to be considered when implementing the connection to this route as this means a potentially huge payload:
+* Try to avoid eagerly loaded relations when they contain a lot of data (do not use them in `$with` array)
+* If you wan't to eagerly load relations only in the show route you can use `showRelations()`
+
+An optional pagination could help here in the future.
+
 ## Usage
 
 * Create your table and corresponding model, eg. with `php artisan make:model YourModel -m`
@@ -23,6 +35,10 @@ $ composer require berthott/laravel-crudable
 * Additionally it registers
   * Destroy many, *delete*  `yourmodels/destroy_many` => delete many entities by their given ids
   * Schema, *get* `yourmodels/schema` => get the database schema
+* Add relations implementing one of the following methods
+  * `attachables()` to attach existing related models to the model
+  * `creatables()` to create new related models and attach them to the model
+  * `customRelations()` to implement your very own behavior for adding relations to the model
 * For more information on how to setup certain features see `\berthott\Crudable\Models\Traits\Crudable`.
 
 ## Options
@@ -37,6 +53,11 @@ $ php artisan vendor:publish --provider="berthott\Crudable\CrudableServiceProvid
 * `prefix`: Defines the route prefix. Defaults to `api`.
 * General Package Configuration
   * `middleware`: An array of all middlewares to be applied to all of the generated routes. Defaults to `['api']`.
+
+## Architecture
+
+* The package relies on [laravel-targetable](https://docs.syspons-dev.com/laravel-targetable) to connect specific functionality to Laravel model entities via a trait. (`Crudable`).
+
 
 ## Compatibility
 
