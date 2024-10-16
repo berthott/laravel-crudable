@@ -18,9 +18,11 @@ The package implements a generic approach onto CRUD routes moving the setup of t
 
 The index route does not implement any pagination. This is to be considered when implementing the connection to this route as this means a potentially huge payload:
 * Try to avoid eagerly loaded relations when they contain a lot of data (do not use them in `$with` array)
+  * To add the information on the relations with minimal data size you can add an [attribute](https://laravel.com/docs/10.x/eloquent-mutators#accessors-and-mutators) holding the relations ids.
+    TODO: This could be done by the package automatically
 * If you wan't to eagerly load relations only in the show route you can use `showRelations()`
 
-An optional pagination could help here in the future.
+TODO: An optional pagination could help here in the future.
 
 ## Usage
 
