@@ -23,6 +23,6 @@ class CrudAttributesService
                 $attributes[] = $show;
             }
         }
-        return $model->load($relations)->makeVisible($attributes);
+        return $model->load($relations)->makeVisible(array_merge($attributes, $relations));
     }
 }
