@@ -1,3 +1,5 @@
+![test workflow](https://github.com/berthott/laravel-crudable/actions/workflows/test.yml/badge.svg)
+
 # Laravel-Crudable
 
 A helper for CRUD routes in Laravel.
